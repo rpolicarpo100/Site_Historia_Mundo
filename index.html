@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linhas do Tempo — História, Natureza, Maçonaria e Conspirações</title>
+<style>
+  :root{
+    --bg:#0d1017; --bg2:#131826; --card:#1a2130; --ink:#e8e2d5; --dim:#a89f8c;
+    --gold:#c9a45c; --gold2:#8a7340; --line:#2b3547;
+    --c-mundo:#c9a45c; --c-nat:#6fbf7a; --c-mac:#6f9fd8; --c-consp:#d87c6f;
+    --proven:#7fbf7a; --theory:#e0a34f;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:Georgia,'Times New Roman',serif;overflow-x:hidden}
+
+  header{
+    text-align:center;padding:26px 16px 18px;border-bottom:1px solid var(--line);
+    background:radial-gradient(ellipse at 50% -40%, rgba(201,164,92,.15), transparent 65%);
+  }
+  header h1{font-weight:normal;font-size:clamp(22px,4vw,34px)}
+  header h1 em{color:var(--gold);font-style:italic}
+  .sub{color:var(--dim);font-size:14px;font-style:italic;margin-top:6px}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:12px;font-size:12.5px}
+  .legend span{display:inline-flex;align-items:center;gap:6px;color:var(--dim)}
+  .dotc{width:10px;height:10px;border-radius:50%;display:inline-block}
+
+  /* ---------- viewport de scroll ---------- */
+  #vp{
+    position:relative;width:100%;overflow-x:auto;overflow-y:hidden;
+    scrollbar-width:thin;scrollbar-color:var(--gold2) var(--bg2);
+    cursor:grab;
+  }
+  #vp.drag{cursor:grabbing}
+  #world{position:relative}
+
+  /* eixo dos anos */
+  #axis{position:sticky;top:0;height:46px;z-index:30;background:linear-gradient(180deg,#10141d 75%,transparent);border-bottom:1px solid var(--line)}
+  .tick{position:absolute;top:0;height:46px}
+  .tick .yr{position:absolute;top:8px;left:0;transform:translateX(-50%);color:var(--gold);font-size:14px;letter-spacing:.05em;white-space:nowrap}
+  .tick .yr.minor{color:#5d6577;font-size:11.5px;top:14px}
+  .gridline{position:absolute;top:46px;bottom:0;width:1px;background:rgba(60,72,95,.35);pointer-events:none}
+  .gridline.major{background:rgba(60,72,95,.7)}
+
+  /* marcador HOJE e zona futura */
+  #now{position:absolute;top:0;bottom:0;width:2px;background:var(--gold);z-index:20;box-shadow:0 0 12px rgba(201,164,92,.8)}
+  #now .lbl{position:absolute;top:48px;left:6px;color:var(--gold);font-size:11px;letter-spacing:.2em;writing-mode:vertical-rl;opacity:.9}
+  #future{position:absolute;top:0;bottom:0;z-index:1;
+    background:repeating-linear-gradient(45deg, rgba(201,164,92,.05) 0 12px, transparent 12px 24px)}
+  #future .flbl{position:sticky;top:60px;display:inline-block;margin:60px 0 0 14px;color:var(--gold2);font-size:12px;letter-spacing:.4em}
+
+  /* faixas (lanes) */
+  .lane{position:relative;border-bottom:1px solid var(--line)}
+  .lane-label{
+    position:sticky;left:0;top:auto;z-index:25;display:inline-block;margin:8px 0 0 0;
+    padding:7px 16px 7px 14px;background:rgba(13,16,23,.88);backdrop-filter:blur(4px);
+    border:1px solid var(--line);border-left:4px solid;border-radius:0 4px 4px 0;
+    font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-family:Verdana,Geneva,sans-serif;
+  }
+  .ev{
+    position:absolute;width:152px;background:var(--card);border:1px solid var(--line);
+    border-left:3px solid;border-radius:4px;padding:7px 9px 8px;cursor:pointer;z-index:10;
+    transition:transform .15s, border-color .15s, z-index 0s;
+  }
+  .ev:hover{transform:translateY(-3px);z-index:15;border-color:var(--gold2)}
+  .ev .d{font-size:11.5px;color:var(--gold);font-variant:small-caps;letter-spacing:.04em}
+  .ev .t{font-size:12.5px;line-height:1.3;margin-top:2px}
+  .ev .flag{display:inline-block;font-size:9px;letter-spacing:.09em;padding:1px 6px;border-radius:10px;border:1px solid;margin-top:4px;font-family:Verdana,sans-serif}
+  .f-prov{color:var(--proven);border-color:var(--proven)}
+  .f-teo{color:var(--theory);border-color:var(--theory)}
+  .f-fut{color:#8fb7e8;border-color:#8fb7e8}
+  .ev::before{content:"";position:absolute;left:-7px;top:10px;width:7px;height:7px;border-radius:50%;background:inherit;border:2px solid;border-color:inherit}
+
+  /* controlos */
+  #ctrl{
+    position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:80;
+    display:flex;gap:10px;align-items:center;background:rgba(13,16,23,.9);backdrop-filter:blur(6px);
+    border:1px solid var(--gold2);border-radius:40px;padding:8px 14px;box-shadow:0 6px 24px rgba(0,0,0,.5);
+  }
+  #ctrl button{
+    background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:24px;
+    padding:8px 18px;font-family:Georgia,serif;font-size:14px;cursor:pointer;transition:all .15s;white-space:nowrap;
+  }
+  #ctrl button:hover{border-color:var(--gold);color:var(--gold)}
+  #ctrl .big{font-size:17px;padding:8px 20px}
+  #pos{color:var(--dim);font-size:12.5px;min-width:86px;text-align:center;font-style:italic}
+
+  /* painel de detalhe */
+  #detail{
+    position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;
+    width:min(680px,94vw);background:var(--bg2);border:1px solid var(--gold2);border-radius:8px;
+    padding:16px 20px;z-index:70;transition:all .25s;box-shadow:0 10px 40px rgba(0,0,0,.6);
+  }
+  #detail.open{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+  #detail .dd{color:var(--gold);font-variant:small-caps;font-size:14px}
+  #detail h3{font-weight:normal;font-size:19px;margin:3px 0 6px}
+  #detail p{color:var(--dim);font-size:14.5px;line-height:1.55}
+  #detail .x{position:absolute;top:8px;right:12px;background:none;border:none;color:var(--dim);font-size:20px;cursor:pointer}
+  #detail .x:hover{color:var(--gold)}
+
+  .note{max-width:960px;margin:26px auto;padding:0 18px;color:var(--dim);font-size:13px;font-style:italic;text-align:center;line-height:1.6}
+  .note b{color:var(--proven);font-style:normal}
+  .note b.t{color:var(--theory)}
+
+  /* ---------- barra de topo / doações ---------- */
+  #topbar{
+    position:fixed;top:10px;right:12px;z-index:90;display:flex;gap:8px;align-items:center;
+  }
+  #langSel{
+    background:var(--card);color:var(--ink);border:1px solid var(--gold2);border-radius:24px;
+    padding:8px 12px;font-family:Georgia,serif;font-size:13px;cursor:pointer;outline:none;
+    max-width:150px;
+  }
+  #langSel:hover{color:var(--gold);border-color:var(--gold)}
+  #langSel option{background:var(--bg2);color:var(--ink)}
+  /* esconder artefactos do Google Translate */
+  #google_translate_element{display:none}
+  .goog-te-banner-frame, .skiptranslate iframe{display:none !important}
+  body{top:0 !important}
+  font{background:transparent !important;box-shadow:none !important}
+  #topbar a, #topbar button{
+    font-family:Georgia,serif;font-size:13.5px;cursor:pointer;text-decoration:none;
+    padding:8px 16px;border-radius:24px;transition:all .15s;
+  }
+  #btnDonate{
+    background:linear-gradient(135deg,#c9a45c,#a9853f);color:#14100a;border:1px solid #e2c98e;
+    font-weight:bold;letter-spacing:.03em;box-shadow:0 3px 14px rgba(201,164,92,.35);
+  }
+  #btnDonate:hover{filter:brightness(1.1)}
+  #btnContrib{background:var(--card);color:var(--ink);border:1px solid var(--gold2)}
+  #btnContrib:hover{color:var(--gold);border-color:var(--gold)}
+
+  /* ---------- modais ---------- */
+  .modal-bg{
+    position:fixed;inset:0;background:rgba(5,7,11,.75);backdrop-filter:blur(3px);
+    z-index:100;display:none;align-items:center;justify-content:center;padding:16px;
+  }
+  .modal-bg.open{display:flex}
+  .modal{
+    width:min(560px,96vw);max-height:88vh;overflow-y:auto;background:var(--bg2);
+    border:1px solid var(--gold2);border-radius:10px;padding:26px 28px;position:relative;
+    box-shadow:0 16px 60px rgba(0,0,0,.7);
+  }
+  .modal .mx{position:absolute;top:10px;right:14px;background:none;border:none;color:var(--dim);font-size:22px;cursor:pointer}
+  .modal .mx:hover{color:var(--gold)}
+  .modal h2{font-weight:normal;font-size:22px;color:var(--gold);margin-bottom:4px}
+  .modal .msub{color:var(--dim);font-size:13.5px;font-style:italic;margin-bottom:16px}
+  .don-opt{
+    display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);
+    border-radius:6px;padding:12px 14px;margin-bottom:10px;
+  }
+  .don-opt .ic{font-size:22px}
+  .don-opt .dt{flex:1}
+  .don-opt .dt b{display:block;font-weight:normal;color:var(--ink);font-size:15px}
+  .don-opt .dt span{color:var(--dim);font-size:12.5px;word-break:break-all}
+  .don-opt button{
+    background:none;border:1px solid var(--gold2);color:var(--gold);border-radius:4px;
+    padding:5px 12px;cursor:pointer;font-size:12px;font-family:Georgia,serif;white-space:nowrap;
+  }
+  .don-opt button:hover{background:rgba(201,164,92,.12)}
+  .don-opt .acts{display:flex;flex-direction:column;gap:6px}
+  .don-opt a.pay{
+    display:inline-block;text-align:center;text-decoration:none;border-radius:4px;
+    padding:5px 12px;font-size:12px;font-family:Georgia,serif;white-space:nowrap;
+    background:linear-gradient(135deg,#c9a45c,#a9853f);color:#14100a;border:1px solid #e2c98e;font-weight:bold;
+  }
+  .don-opt a.pay:hover{filter:brightness(1.1)}
+
+  /* ---------- secção Arquivo Aberto ---------- */
+  #arquivo{max-width:760px;margin:10px auto 60px;padding:0 18px}
+  #arquivo .box{
+    background:var(--bg2);border:1px solid var(--line);border-top:3px solid var(--gold2);
+    border-radius:8px;padding:26px 28px;
+  }
+  #arquivo h2{font-weight:normal;font-size:24px;text-align:center}
+  #arquivo h2 em{color:var(--gold);font-style:italic}
+  #arquivo .asub{text-align:center;color:var(--dim);font-size:14px;font-style:italic;margin:6px 0 22px}
+  .frow{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+  .frow > *{flex:1;min-width:200px}
+  #arquivo label{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:5px;font-family:Verdana,sans-serif}
+  #arquivo input[type=text], #arquivo input[type=email], #arquivo select, #arquivo textarea{
+    width:100%;background:var(--card);border:1px solid var(--line);border-radius:5px;
+    color:var(--ink);font-family:Georgia,serif;font-size:14.5px;padding:10px 12px;outline:none;transition:border-color .15s;
+  }
+  #arquivo input:focus, #arquivo select:focus, #arquivo textarea:focus{border-color:var(--gold2)}
+  #arquivo textarea{min-height:120px;resize:vertical}
+  #drop{
+    border:2px dashed var(--gold2);border-radius:6px;padding:22px;text-align:center;color:var(--dim);
+    font-size:13.5px;cursor:pointer;transition:all .15s;margin-bottom:12px;font-style:italic;
+  }
+  #drop:hover, #drop.over{background:rgba(201,164,92,.07);color:var(--gold)}
+  #filelist{list-style:none;margin:0 0 14px;padding:0}
+  #filelist li{
+    display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);
+    border-radius:5px;padding:7px 12px;margin-bottom:6px;font-size:13px;color:var(--ink);
+  }
+  #filelist li .sz{color:var(--dim);font-size:11.5px}
+  #filelist li button{margin-left:auto;background:none;border:none;color:var(--dim);cursor:pointer;font-size:15px}
+  #filelist li button:hover{color:#d87c6f}
+  #btnSend{
+    display:block;width:100%;background:linear-gradient(135deg,#c9a45c,#a9853f);color:#14100a;
+    border:1px solid #e2c98e;border-radius:6px;padding:13px;font-family:Georgia,serif;
+    font-size:16px;font-weight:bold;cursor:pointer;letter-spacing:.02em;
+  }
+  #btnSend:hover{filter:brightness(1.08)}
+  #sendOk{
+    display:none;margin-top:14px;background:rgba(127,191,122,.1);border:1px solid var(--proven);
+    border-radius:6px;padding:14px 16px;color:var(--proven);font-size:14px;line-height:1.55;
+  }
+  #sendOk a{color:var(--gold)}
+  #prevList{margin-top:20px;border-top:1px solid var(--line);padding-top:14px;display:none}
+  #prevList h4{font-weight:normal;color:var(--dim);font-size:13px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;font-family:Verdana,sans-serif}
+  #prevList .pi{font-size:13px;color:var(--dim);padding:5px 0;border-bottom:1px dotted var(--line)}
+  #prevList .pi b{color:var(--ink);font-weight:normal}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <select id="langSel" title="Língua / Language" aria-label="Escolher língua">
+    <option value="">🌐 Português</option>
+    <option value="en">English</option>
+    <option value="es">Español</option>
+    <option value="fr">Français</option>
+    <option value="de">Deutsch</option>
+    <option value="it">Italiano</option>
+    <option value="nl">Nederlands</option>
+    <option value="pl">Polski</option>
+    <option value="ro">Română</option>
+    <option value="el">Ελληνικά</option>
+    <option value="sv">Svenska</option>
+    <option value="ru">Русский</option>
+    <option value="uk">Українська</option>
+    <option value="tr">Türkçe</option>
+    <option value="ar">العربية</option>
+    <option value="hi">हिन्दी</option>
+    <option value="id">Bahasa Indonesia</option>
+    <option value="vi">Tiếng Việt</option>
+    <option value="zh-CN">中文（简体）</option>
+    <option value="ja">日本語</option>
+    <option value="ko">한국어</option>
+  </select>
+  <button id="btnContrib" onclick="document.getElementById('arquivo').scrollIntoView({behavior:'smooth'})">✉ Contribuir</button>
+  <button id="btnDonate" onclick="openModal('donModal')">♥ Doações</button>
+</div>
+<div id="google_translate_element"></div>
+
+<!-- Modal de doações -->
+<div class="modal-bg" id="donModal">
+  <div class="modal">
+    <button class="mx" onclick="closeModal('donModal')">×</button>
+    <h2>Apoiar a Crónica</h2>
+    <p class="msub">Este arquivo é mantido de forma independente, sem publicidade nem patrocínios — a imparcialidade também se defende assim. Qualquer contributo ajuda a manter e expandir as linhas do tempo.</p>
+
+    <div class="don-opt">
+      <span class="ic">📱</span>
+      <div class="dt"><b>MB WAY</b>
+        <span id="mbwayTxt" class="notranslate">•••&nbsp;•••&nbsp;•••</span></div>
+      <div class="acts">
+        <button onclick="copyHidden('mb', this)">Copiar n.º</button>
+      </div>
+    </div>
+    <div class="don-opt">
+      <span class="ic">💠</span>
+      <div class="dt"><b>Revolut</b>
+        <span id="revTxt" class="notranslate">revolut.me/infowithgoal</span></div>
+      <div class="acts">
+        <a class="pay" href="https://revolut.me/infowithgoal" target="_blank" rel="noopener">Pagar ➜</a>
+        <button onclick="copyTxt('revTxt', this)">Copiar</button>
+      </div>
+    </div>
+    <div class="don-opt">
+      <span class="ic">⟠</span>
+      <div class="dt"><b>Ethereum (rede ETH)</b>
+        <span id="ethTxt" class="notranslate">0x558d60469aC85EBC9679aB67835Fa9657a4B469e</span></div>
+      <div class="acts">
+        <a class="pay" href="ethereum:0x558d60469aC85EBC9679aB67835Fa9657a4B469e@1" title="Abre a sua carteira (MetaMask, Trust, etc.) com o endereço preenchido">Pagar ➜</a>
+        <button onclick="copyTxt('ethTxt', this)">Copiar</button>
+      </div>
+    </div>
+    <p class="msub" style="margin:14px 0 0">«Pagar ➜» abre a app de pagamento com os dados preenchidos. No MB WAY, copie o número e envie na app. Obrigado — cada doação é registada nos agradecimentos do arquivo; a pedido, em anonimato.</p>
+  </div>
+</div>
+
+<header>
+  <h1>Linhas do <em>Tempo</em></h1>
+  <div class="sub">Quatro histórias paralelas, alinhadas pelas mesmas datas · arraste ou use os botões: ◀ passado · presente e futuro ▶</div>
+  <div class="legend">
+    <span><i class="dotc" style="background:var(--c-mundo)"></i> História do Mundo</span>
+    <span><i class="dotc" style="background:var(--c-nat)"></i> Eventos Naturais</span>
+    <span><i class="dotc" style="background:var(--c-rel)"></i> Eventos Religiosos</span>
+    <span><i class="dotc" style="background:var(--c-mac)"></i> Maçonaria &amp; Illuminati</span>
+    <span><i class="dotc" style="background:var(--c-consp)"></i> Conspirações — <b style="color:var(--proven)">provadas</b> e <b style="color:var(--theory)">teorias</b></span>
+  </div>
+</header>
+
+<div id="vp"><div id="world"></div></div>
+
+<p class="note">Nota do cronista: na linha das conspirações distingo sempre o que é <b>PROVADO por documentos, tribunais ou arquivos desclassificados</b> do que é <b class="t">TEORIA sem provas</b> (regista-se a data em que o facto ocorreu ou em que o mito nasceu — porque os mitos também têm história). Sobre a Maçonaria e os Illuminati da Baviera registo apenas factos documentados; a lenda de uns «Illuminati» sobreviventes que governam o mundo pertence, comprovadamente, à linha das teorias.</p>
+
+<!-- ============ ARQUIVO ABERTO — contribuições ============ -->
+<section id="arquivo">
+  <div class="box">
+    <h2>Arquivo <em>Aberto</em></h2>
+    <p class="asub">Conhece um acontecimento, documento ou questão histórica que falta nestas linhas?
+    Envie-o ao cronista. Toda a contribuição é analisada com o mesmo critério: fontes, datas e provas.</p>
+
+    <form id="contribForm" onsubmit="return sendContrib(event)">
+      <div class="frow">
+        <div><label for="cNome">Nome (ou anónimo)</label>
+          <input type="text" id="cNome" placeholder="O seu nome"></div>
+        <div><label for="cMail">Email (para resposta)</label>
+          <input type="email" id="cMail" placeholder="nome@exemplo.pt"></div>
+      </div>
+      <div class="frow">
+        <div><label for="cLinha">Linha do tempo</label>
+          <select id="cLinha">
+            <option>História do Mundo</option>
+            <option>Eventos Naturais</option>
+            <option>Maçonaria &amp; Illuminati</option>
+            <option>Conspirações</option>
+            <option>Outra / nova linha sugerida</option>
+          </select></div>
+        <div><label for="cData">Data do evento (se aplicável)</label>
+          <input type="text" id="cData" placeholder="ex.: 1147, c. 500 a.C., séc. XIX"></div>
+      </div>
+      <label for="cMsg">Mensagem / questão histórica</label>
+      <textarea id="cMsg" required placeholder="Descreva o evento, a questão ou a correção que propõe — se possível com fontes (livros, arquivos, jornais da época)…"></textarea>
+      <div style="height:12px"></div>
+      <label>Documentos (imagens, PDF, texto — opcional)</label>
+      <div id="drop">⇪ Clique ou arraste ficheiros para aqui<br><small>até 5 ficheiros · máx. 5 MB cada</small></div>
+      <input type="file" id="fileInput" multiple hidden accept=".pdf,.png,.jpg,.jpeg,.webp,.gif,.txt,.doc,.docx">
+      <ul id="filelist"></ul>
+      <button type="submit" id="btnSend">Enviar ao cronista</button>
+      <div id="sendOk"></div>
+    </form>
+
+    <div id="prevList">
+      <h4>Contribuições guardadas neste navegador</h4>
+      <div id="prevItems"></div>
+    </div>
+  </div>
+</section>
+
+<div id="detail"><button class="x" onclick="closeDetail()">×</button><div class="dd"></div><h3></h3><p></p></div>
+
+<div id="ctrl">
+  <button class="big" id="bPast" title="Recuar no tempo">◀ Passado</button>
+  <button id="bToday">● Hoje</button>
+  <span id="pos"></span>
+  <button class="big" id="bFut" title="Avançar no tempo">Futuro ▶</button>
+</div>
+
+<script>
+/* ================= ESCALA DE TEMPO (por segmentos) ================= */
+var SEGS = [
+  {a:-3200, b:0,    ppy:0.085},
+  {a:0,     b:1400, ppy:0.38},
+  {a:1400,  b:1700, ppy:2.3},
+  {a:1700,  b:1900, ppy:5.2},
+  {a:1900,  b:2066, ppy:15}
+];
+var PADL = 60, PADR = 120;
+function X(y){
+  var x = PADL;
+  for (var i=0;i<SEGS.length;i++){
+    var s = SEGS[i];
+    if (y <= s.a) break;
+    x += (Math.min(y,s.b)-s.a)*s.ppy;
+  }
+  return x;
+}
+var TOTALW = X(2066)+PADR;
+function yearFromX(x){
+  var acc = PADL;
+  for (var i=0;i<SEGS.length;i++){
+    var s=SEGS[i], w=(s.b-s.a)*s.ppy;
+    if (x <= acc+w) return s.a + (x-acc)/s.ppy;
+    acc += w;
+  }
+  return 2066;
+}
+function fmtYear(y){
+  y = Math.round(y);
+  return y<0 ? (-y)+' a.C.' : (y===0?'1 d.C.':''+y);
+}
+
+/* ================= DADOS ================= */
+/* y = ano para posicionamento (negativo = a.C.) ; d = rótulo de data ; t = título ; p = descrição ; f = 'prov'|'teo'|'fut' */
+
+var MUNDO = [
+ {y:-3200,d:"c. 3200 a.C.",t:"Invenção da escrita",p:"Cuneiforme na Suméria e hieróglifos no Egito: começa a história escrita."},
+ {y:-2560,d:"c. 2560 a.C.",t:"Grande Pirâmide de Gizé",p:"Concluída a pirâmide de Khufu, a estrutura mais alta do mundo durante quase 4 000 anos."},
+ {y:-1750,d:"c. 1750 a.C.",t:"Código de Hamurábi",p:"Um dos mais antigos corpos de leis preservados, gravado em pedra na Babilónia."},
+ {y:-1200,d:"c. 1200 a.C.",t:"Colapso da Idade do Bronze",p:"Impérios do Mediterrâneo oriental ruem em poucas décadas."},
+ {y:-508,d:"508 a.C.",t:"Democracia em Atenas",p:"Reformas de Clístenes fundam o governo dos cidadãos."},
+ {y:-323,d:"323 a.C.",t:"Morte de Alexandre",p:"Fim das conquistas; começa o mundo helenístico."},
+ {y:-221,d:"221 a.C.",t:"Unificação da China",p:"Qin Shi Huangdi, primeiro imperador; escrita e medidas unificadas."},
+ {y:-44,d:"44 a.C.",t:"Assassinato de César",p:"Idos de Março; a República Romana agoniza."},
+ {y:30,d:"c. 30 d.C.",t:"Crucificação de Jesus",p:"Do movimento dos seus seguidores nascerá o cristianismo."},
+ {y:476,d:"476",t:"Queda de Roma (Ocidente)",p:"Odoacro depõe o último imperador; fim convencional da Antiguidade."},
+ {y:622,d:"622",t:"Hégira de Maomé",p:"Ano 1 do calendário islâmico; em um século o islão vai do Indo à Ibéria."},
+ {y:800,d:"800",t:"Coroação de Carlos Magno",p:"Renasce a ideia imperial no Ocidente."},
+ {y:1206,d:"1206",t:"Gengis Khan",p:"Início do maior império contíguo da história."},
+ {y:1215,d:"1215",t:"Magna Carta",p:"Ninguém está acima da lei — semente do constitucionalismo."},
+ {y:1453,d:"1453",t:"Queda de Constantinopla",p:"Fim do Império Romano do Oriente; fim da Idade Média."},
+ {y:1455,d:"c. 1455",t:"Bíblia de Gutenberg",p:"A imprensa de tipos móveis muda a circulação do saber."},
+ {y:1492,d:"1492",t:"Colombo na América",p:"Contacto permanente entre os hemisférios."},
+ {y:1498,d:"1498",t:"Gama chega à Índia",p:"Portugal abre a rota do Cabo; o comércio torna-se global."},
+ {y:1517,d:"1517",t:"Reforma Protestante",p:"As 95 Teses de Lutero dividem a cristandade ocidental."},
+ {y:1522,d:"1522",t:"1.ª circum-navegação",p:"A expedição de Magalhães/Elcano dá a volta à Terra."},
+ {y:1648,d:"1648",t:"Paz de Vestefália",p:"Nasce o sistema moderno de Estados soberanos."},
+ {y:1687,d:"1687",t:"Principia de Newton",p:"A física matemática unifica céus e Terra."},
+ {y:1776,d:"1776",t:"Independência dos EUA",p:"4 de julho: as Treze Colónias declaram-se livres."},
+ {y:1789,d:"1789",t:"Revolução Francesa",p:"Queda da Bastilha; direitos do homem; fim do Antigo Regime."},
+ {y:1815,d:"1815",t:"Waterloo",p:"Queda definitiva de Napoleão; Congresso de Viena reordena a Europa."},
+ {y:1822,d:"1822",t:"Independência do Brasil",p:"O Brasil separa-se de Portugal como império."},
+ {y:1859,d:"1859",t:"A Origem das Espécies",p:"Darwin publica a teoria da evolução por seleção natural."},
+ {y:1865,d:"1865",t:"Fim da Guerra Civil dos EUA",p:"Abolição da escravatura (13.ª Emenda); Lincoln assassinado."},
+ {y:1885,d:"1884–85",t:"Conferência de Berlim",p:"A Europa reparte África sem presença africana."},
+ {y:1903,d:"1903",t:"1.º voo dos Wright",p:"17 de dezembro: começa a era da aviação."},
+ {y:1914,d:"1914–1918",t:"Primeira Guerra Mundial",p:"15–20 milhões de mortos; quatro impérios desfeitos."},
+ {y:1917,d:"1917",t:"Revolução Russa",p:"Os bolcheviques tomam o poder; em 1922 nasce a URSS."},
+ {y:1929,d:"1929",t:"Crash de Wall Street",p:"Começa a Grande Depressão mundial."},
+ {y:1939,d:"1939–1945",t:"Segunda Guerra Mundial",p:"60–80 milhões de mortos; Holocausto; bombas atómicas em 1945."},
+ {y:1945,d:"1945",t:"Fundação da ONU",p:"24 de outubro; em 1948, a Declaração Universal dos Direitos Humanos."},
+ {y:1947,d:"1947",t:"Independência da Índia",p:"Fim do Raj britânico; partição Índia–Paquistão."},
+ {y:1949,d:"1949",t:"República Popular da China",p:"Mao proclama a RPC após a guerra civil."},
+ {y:1957,d:"1957",t:"Sputnik",p:"Primeiro satélite artificial; começa a era espacial."},
+ {y:1969,d:"1969",t:"Homem na Lua",p:"Apollo 11: Armstrong e Aldrin pisam outro mundo."},
+ {y:1974,d:"1974",t:"Revolução dos Cravos",p:"25 de Abril: cai a ditadura portuguesa; segue-se a descolonização."},
+ {y:1989,d:"1989",t:"Queda do Muro de Berlim",p:"9 de novembro; o bloco de Leste desmorona-se."},
+ {y:1991,d:"1991",t:"Fim da URSS",p:"26 de dezembro: dissolução da União Soviética; fim da Guerra Fria. Nasce a World Wide Web pública."},
+ {y:2001,d:"2001",t:"11 de Setembro",p:"Atentados da Al-Qaeda nos EUA; guerras do Afeganistão e Iraque."},
+ {y:2008,d:"2008",t:"Crise financeira global",p:"Queda do Lehman Brothers; pior recessão desde 1929."},
+ {y:2020,d:"2020–2023",t:"Pandemia de COVID-19",p:"Milhões de mortos; vacinas de mRNA em tempo recorde."},
+ {y:2022,d:"2022",t:"Invasão da Ucrânia",p:"Maior guerra em solo europeu desde 1945. IA generativa chega ao grande público."},
+ {y:2030,d:"2030 (meta)",t:"Objetivos da ONU 2030",f:"fut",p:"Prazo dos 17 Objetivos de Desenvolvimento Sustentável adotados em 2015. Futuro: compromisso agendado, resultado incerto."},
+ {y:2050,d:"2050 (meta)",t:"Neutralidade carbónica",f:"fut",p:"Meta climática assumida por UE e dezenas de países. Futuro: agendado, não garantido."}
+];
+
+var NATURA = [
+ {y:-3200,d:"c. 3200 a.C.",t:"Erupção do Cerro Blanco",p:"Nos Andes (Argentina), uma das maiores erupções do Holoceno (VEI 7)."},
+ {y:-1600,d:"c. 1600 a.C.",t:"Erupção de Tera (Santorini)",p:"Explosão colossal no Egeu; devasta a civilização minóica de Creta. Provável semente do mito da Atlântida."},
+ {y:79,d:"79 d.C.",t:"Vesúvio destrói Pompeia",p:"Pompeia e Herculano soterradas — e preservadas para a arqueologia."},
+ {y:536,d:"536",t:"O «pior ano para se estar vivo»",p:"Véu de poeira vulcânica escurece o sol durante 18 meses; fomes na Europa e Ásia; segue-se a Peste de Justiniano (541)."},
+ {y:1347,d:"1347–1351",t:"Peste Negra",p:"Mata entre um terço e metade da população europeia; devasta também Médio Oriente e Norte de África."},
+ {y:1556,d:"1556",t:"Sismo de Shaanxi",p:"China: o terramoto mais mortífero registado — cerca de 830 000 mortos."},
+ {y:1755,d:"1755",t:"Terramoto de Lisboa",p:"1 de novembro: sismo, tsunami e incêndio destroem Lisboa; abala a filosofia europeia."},
+ {y:1815,d:"1815",t:"Erupção do Tambora",p:"Indonésia, VEI 7 — a maior erupção da era moderna. 1816 será o «ano sem verão», com fomes no hemisfério norte."},
+ {y:1883,d:"1883",t:"Krakatoa",p:"A explosão ouve-se a 4 800 km; tsunamis matam c. 36 000 pessoas; crepúsculos vermelhos em todo o mundo."},
+ {y:1908,d:"1908",t:"Evento de Tunguska",p:"Explosão de um corpo celeste sobre a Sibéria derruba 80 milhões de árvores — o maior impacto da era moderna."},
+ {y:1918,d:"1918–1920",t:"Gripe pneumónica",p:"Pandemia infeta um terço da humanidade; dezenas de milhões de mortos."},
+ {y:1931,d:"1931",t:"Cheias da China",p:"As inundações do Yangtzé/Huai estão entre os desastres naturais mais mortíferos da história (centenas de milhares a milhões de vítimas)."},
+ {y:1960,d:"1960",t:"Sismo de Valdivia",p:"Chile, magnitude 9,5 — o maior terramoto jamais registado por instrumentos."},
+ {y:1980,d:"1980",t:"Monte de Santa Helena",p:"EUA: erupção lateral filmada e estudada como nenhuma antes."},
+ {y:1986,d:"1986",t:"Chernobyl",p:"26 de abril: o pior acidente nuclear da história contamina vastas regiões da Europa."},
+ {y:2004,d:"2004",t:"Tsunami do Índico",p:"26 de dezembro: sismo de magnitude ~9,1 mata cerca de 230 000 pessoas em 14 países."},
+ {y:2010,d:"2010",t:"Eyjafjallajökull",p:"Erupção na Islândia paralisa a aviação europeia durante dias."},
+ {y:2011,d:"2011",t:"Tohoku / Fukushima",p:"Japão: sismo 9,0 e tsunami matam c. 18 000 pessoas e causam o acidente nuclear de Fukushima."},
+ {y:2023,d:"2023",t:"Sismos Turquia–Síria",p:"6 de fevereiro: mais de 55 000 mortos — e 2023–24 registam os anos mais quentes da era instrumental."},
+ {y:2029,d:"13 abr 2029",t:"Passagem do asteroide Apophis",f:"fut",p:"Previsão astronómica certa: Apophis (c. 340 m) passará a ~32 000 km da Terra — visível a olho nu, sem risco de impacto."},
+ {y:2061,d:"2061",t:"Regresso do cometa Halley",f:"fut",p:"Previsão certa da mecânica celeste: o Halley voltará ao periélio em julho de 2061."}
+];
+
+var RELIG = [
+ {y:-3100,d:"c. 3100 a.C.",t:"Primeiros templos e deuses registados",p:"Com a escrita, Suméria e Egito registam os primeiros panteões: Anu, Enlil, Inanna; Ré, Osíris, Ísis. A religião organizada é tão antiga quanto a cidade."},
+ {y:-2100,d:"c. 2100 a.C.",t:"Zigurate de Ur",p:"Ur-Nammu ergue o grande zigurate ao deus-lua Nanna — o templo-montanha, modelo da arquitetura sagrada mesopotâmica."},
+ {y:-1350,d:"c. 1350 a.C.",t:"Akhenaton e Aton",p:"O faraó impõe o culto quase exclusivo do disco solar — experiência próxima do monoteísmo, revertida após a sua morte."},
+ {y:-1000,d:"c. 1200–500 a.C.",t:"Zoroastro na Pérsia",p:"Datação debatida. O zoroastrismo — Ahura Mazda, luta cósmica entre bem e mal, juízo final — influenciará judaísmo, cristianismo e islão."},
+ {y:-800,d:"c. 800–200 a.C.",t:"«Era Axial»",p:"Num mesmo arco temporal surgem os Upanixades e o Buda na Índia, Confúcio e Lao Tsé na China, os profetas de Israel e os filósofos gregos — as bases espirituais que perduram."},
+ {y:-587,d:"587 a.C.",t:"Destruição do 1.º Templo",p:"Nabucodonosor II destrói o Templo de Jerusalém; no exílio babilónico consolida-se o monoteísmo judaico e compila-se boa parte da Bíblia hebraica."},
+ {y:-528,d:"c. 528 a.C.",t:"Iluminação do Buda",p:"Segundo a tradição, Siddhartha Gautama atinge o despertar em Bodh Gaya e prega o primeiro sermão em Sarnath — nasce o budismo."},
+ {y:-250,d:"c. 250 a.C.",t:"Asoka difunde o budismo",p:"O imperador máuria envia missões budistas ao Ceilão e ao mundo helenístico — primeira grande expansão missionária da história."},
+ {y:30,d:"c. 30/33 d.C.",t:"Crucificação de Jesus",p:"Jesus de Nazaré é executado em Jerusalém sob Pôncio Pilatos. As comunidades dos seus seguidores espalham-se pelo império em poucas décadas."},
+ {y:70,d:"70 d.C.",t:"Destruição do 2.º Templo",p:"Tito arrasa o Templo de Jerusalém. O judaísmo reorganiza-se em torno da sinagoga e da Torá — judaísmo rabínico — na diáspora."},
+ {y:313,d:"313",t:"Édito de Milão",p:"Constantino concede liberdade de culto aos cristãos. Em 325, o Concílio de Niceia define o credo; em 380, o cristianismo é religião oficial de Roma."},
+ {y:610,d:"c. 610",t:"Revelação de Maomé",p:"Segundo a tradição islâmica, Maomé recebe as primeiras revelações do Corão no monte Hira, perto de Meca. A Hégira (622) marca o ano 1 islâmico."},
+ {y:632,d:"632",t:"Morte de Maomé e expansão",p:"À morte do Profeta segue-se a divisão sunitas/xiitas (questão da sucessão, consumada em Carbala, 680) e a expansão do islão em três continentes."},
+ {y:788,d:"séc. VIII–IX",t:"Shankara e o hinduísmo clássico",p:"Adi Shankara sistematiza o Vedanta; consolida-se o hinduísmo devocional dos grandes templos que define a Índia até hoje."},
+ {y:1054,d:"1054",t:"Grande Cisma",p:"Roma e Constantinopla excomungam-se mutuamente: separação definitiva entre catolicismo e ortodoxia."},
+ {y:1096,d:"1096–1291",t:"Era das Cruzadas",p:"Guerras santas entre cristandade latina e islão pelo Levante; marcam durante séculos as relações entre as duas civilizações."},
+ {y:1469,d:"1469",t:"Nasce Guru Nanak",p:"Fundador do sikhismo no Punjab: um só Deus, igualdade entre castas e géneros. O Guru Granth Sahib torna-se a escritura eterna dos sikhs."},
+ {y:1517,d:"1517",t:"Reforma Protestante",p:"As 95 Teses de Lutero dividem a cristandade ocidental. Calvino, a Reforma inglesa e a Contra-Reforma católica (Trento, 1545–63) refazem o mapa religioso europeu."},
+ {y:1620,d:"1620",t:"Mayflower e a liberdade religiosa",p:"Puritanos fundam Plymouth fugindo à perseguição; a experiência americana consagrará a separação Igreja–Estado (1.ª Emenda, 1791)."},
+ {y:1830,d:"séc. XIX",t:"Novos movimentos religiosos",p:"Mórmons (1830), adventistas, testemunhas de Jeová, bahá'í (1863): a era moderna multiplica confissões — e o pentecostalismo (Azusa Street, 1906) tornar-se-á o ramo cristão que mais cresce."},
+ {y:1869,d:"1869–1870",t:"Concílio Vaticano I",p:"Define a infalibilidade papal, no auge do confronto entre a Igreja e a modernidade liberal."},
+ {y:1947,d:"1947–48",t:"Manuscritos do Mar Morto",p:"Descobertos em Qumran: os mais antigos manuscritos bíblicos conhecidos, janela única sobre o judaísmo do tempo de Jesus."},
+ {y:1948,d:"1948",t:"Israel e as religiões em movimento",p:"Criação do Estado de Israel; a partição da Índia (1947) redesenha fronteiras hindu-muçulmanas; começa a era das grandes migrações religiosas contemporâneas."},
+ {y:1962,d:"1962–1965",t:"Concílio Vaticano II",p:"A Igreja Católica abre-se ao mundo moderno: missa nas línguas vernáculas, diálogo inter-religioso, liberdade religiosa (Nostra Aetate, Dignitatis Humanae)."},
+ {y:1979,d:"1979",t:"Revolução Iraniana",p:"Khomeini instala a república islâmica no Irão — o regresso da religião ao centro da política mundial marca as décadas seguintes."},
+ {y:2013,d:"2013",t:"Papa Francisco",p:"Primeiro papa americano e jesuíta, eleito após a renúncia de Bento XVI (a primeira em quase 600 anos, desde 1415)."},
+ {y:2033,d:"2033",t:"Bimilenário da crucificação",f:"fut",p:"Cristãos de todo o mundo assinalarão os 2000 anos da morte e ressurreição de Jesus (contando de 33 d.C.) — jubileu já em preparação em Roma e Jerusalém."}
+];
+
+var MACON = [
+ {y:1390,d:"c. 1390–1425",t:"Manuscritos dos ofícios",p:"Regius e Cooke: os mais antigos textos das guildas de pedreiros ingleses — a raiz «operativa» da maçonaria."},
+ {y:1599,d:"1598–99",t:"Estatutos Schaw",p:"Escócia: William Schaw regulamenta as lojas; atas de Edimburgo são os registos de loja mais antigos que sobrevivem."},
+ {y:1646,d:"1646",t:"Elias Ashmole iniciado",p:"Um dos primeiros registos documentados de iniciação de um não-pedreiro («maçom aceite») em Inglaterra."},
+ {y:1717,d:"1717",t:"Grande Loja de Londres",p:"24 de junho: quatro lojas fundam a primeira Grande Loja — nasce a maçonaria moderna «especulativa»."},
+ {y:1723,d:"1723",t:"Constituições de Anderson",p:"Código fundador: tolerância religiosa, fraternidade e sigilo ritual."},
+ {y:1738,d:"1738",t:"1.ª condenação papal",p:"Clemente XII proíbe aos católicos a maçonaria (bula In eminenti) — início de séculos de tensão com Roma."},
+ {y:1776,d:"1 mai 1776",t:"Fundação dos Illuminati",p:"Adam Weishaupt funda em Ingolstadt (Baviera) a Ordem dos Iluminados: racionalismo anticlerical, estrutura secreta; talvez 2 000 membros no auge."},
+ {y:1785,d:"1784–85",t:"Illuminati proibidos",p:"O eleitor Carlos Teodoro bane as sociedades secretas; a ordem é dissolvida e os seus papéis publicados pela polícia bávara. FACTO: deixou de existir."},
+ {y:1797,d:"1797–98",t:"Nasce o mito Illuminati",p:"Barruel e Robison culpam os Illuminati pela Revolução Francesa — sem provas. É aqui que nasce a lenda de uma ordem sobrevivente e omnipotente."},
+ {y:1826,d:"1826",t:"Caso William Morgan",p:"EUA: desaparecimento de um ex-maçom que ia publicar os rituais gera escândalo e o Partido Antimaçónico (1828) — o primeiro «terceiro partido» americano."},
+ {y:1871,d:"1871",t:"Auge maçónico do séc. XIX",p:"Época de forte expansão das lojas na Europa e Américas; muitos próceres liberais e republicanos são maçons."},
+ {y:1935,d:"1935",t:"Perseguições totalitárias",p:"Nazismo, fascismo e estalinismo proíbem e perseguem a maçonaria; em Portugal, o Estado Novo bane-a pela Lei n.º 1901 (1935)."},
+ {y:1717.5,d:"séc. XVIII",t:"Maçons ilustres (facto)",p:"Foram maçons documentados: Franklin, Washington, Voltaire, Mozart, Goethe, Bolívar, Garibaldi. NÃO há prova de coordenação secreta entre eles para governar o mundo."},
+ {y:1984,d:"1984",t:"Loja P2 dissolvida",p:"Itália: a loja irregular Propaganda Due (Licio Gelli) é dissolvida por lei após o escândalo de 1981 — caso real de infiltração política, julgado em tribunal."},
+ {y:2017,d:"2017",t:"300 anos da Grande Loja",p:"A maçonaria celebra o tricentenário: hoje cerca de 6 milhões de membros no mundo, atividade amplamente pública e beneficente."}
+];
+
+var CONSP = [
+ {y:64,d:"64 d.C.",t:"Nero e o incêndio de Roma",f:"teo",p:"TEORIA ANTIGA: Roma ardeu (facto), mas a acusação de que Nero mandou atear o fogo é duvidosa; a culpa lançada aos cristãos serviu de bode expiatório."},
+ {y:1307,d:"1307",t:"Queda dos Templários",f:"prov",p:"PROVADO: Filipe IV de França orquestrou acusações forjadas para destruir a ordem e ficar-lhe com a riqueza. O pergaminho de Chinon (Vaticano) mostra que o papa os absolveu da heresia."},
+ {y:1605,d:"1605",t:"Conspiração da Pólvora",f:"prov",p:"PROVADO: Guy Fawkes e conspiradores católicos tentaram realmente explodir o Parlamento inglês a 5 de novembro. Julgados e executados."},
+ {y:1798,d:"1797–98",t:"«Illuminati controlam o mundo»",f:"teo",p:"TEORIA SEM PROVAS: nascida com Barruel/Robison. A ordem foi extinta em 1785; nenhum documento credível mostra continuidade. É a matriz de quase todas as teorias modernas."},
+ {y:1903,d:"1903",t:"Protocolos dos Sábios de Sião",f:"prov",p:"PROVADO COMO FRAUDE: o panfleto antissemita é uma falsificação da polícia czarista (plágio provado em tribunal, Berna 1934–35). Alimentou perseguições e o Holocausto — o dano foi real."},
+ {y:1932,d:"1932–1972",t:"Experiência de Tuskegee",f:"prov",p:"PROVADO: o serviço de saúde dos EUA deixou homens negros com sífilis sem tratamento durante 40 anos para estudar a doença. Revelado em 1972; pedido de desculpas oficial em 1997."},
+ {y:1953,d:"1953–1973",t:"Projeto MK-Ultra",f:"prov",p:"PROVADO: programa da CIA de controlo mental com LSD em cobaias involuntárias. Documentos confirmados pelo Congresso (Comissão Church, 1975–77) apesar da destruição de arquivos em 1973."},
+ {y:1962,d:"1962",t:"Operação Northwoods",f:"prov",p:"PROVADO (nunca executado): chefias militares dos EUA propuseram encenar atentados para justificar invadir Cuba. Kennedy rejeitou. Documentos desclassificados em 1997."},
+ {y:1963,d:"1963",t:"Assassinato de JFK",f:"teo",p:"FACTO: Kennedy foi morto por Lee Harvey Oswald (conclusão Warren, 1964). TEORIAS de segundo atirador/CIA/máfia nunca foram provadas, apesar de milhões de páginas desclassificadas."},
+ {y:1969,d:"1969",t:"«A ida à Lua foi encenada»",f:"teo",p:"TEORIA DESMENTIDA: 382 kg de rochas lunares, refletores laser ainda usados, rastreio independente (incl. pela URSS) e fotos de sondas modernas dos locais de alunagem provam as missões Apollo."},
+ {y:1972,d:"1972–74",t:"Watergate",f:"prov",p:"PROVADO: conspiração real da Casa Branca de Nixon para espiar e obstruir a justiça. Única demissão de um presidente dos EUA (8 de agosto de 1974)."},
+ {y:1988,d:"anos 1980–90",t:"«Nova Ordem Mundial»",f:"teo",p:"TEORIA SEM PROVAS: a ideia de um governo mundial secreto (Illuminati, Bilderberg, «elites») recicla o mito de 1798. Reuniões como Bilderberg existem (facto), o governo oculto não está demonstrado."},
+ {y:1996,d:"anos 1990",t:"«Chemtrails»",f:"teo",p:"TEORIA DESMENTIDA: os rastos dos aviões são condensação de vapor de água. Nenhuma análise atmosférica independente encontrou o alegado programa de pulverização."},
+ {y:2001,d:"2001",t:"«11/9 foi trabalho interno»",f:"teo",p:"TEORIA SEM PROVAS: as investigações (Comissão do 11/9, NIST) atribuem os colapsos aos impactos e incêndios. FACTO provado ao lado: falhas graves de serviços de informação existiram."},
+ {y:2013,d:"2013",t:"Revelações de Snowden",f:"prov",p:"PROVADO: documentos revelaram vigilância eletrónica em massa (PRISM e outros) pela NSA e aliados — uma «teoria da conspiração» que se confirmou verdadeira em parte substancial."},
+ {y:2020,d:"2020",t:"«5G causa COVID» e afins",f:"teo",p:"TEORIA DESMENTIDA: vírus não se transmitem por ondas rádio. A pandemia gerou uma «infodemia» estudada pela OMS. A origem exata do SARS-CoV-2 (mercado vs. fuga de laboratório) permanece, essa sim, legitimamente em investigação."},
+ {y:2035,d:"futuro",t:"O padrão repete-se",f:"fut",p:"Lição do historiador: as conspirações reais tendem a ser pequenas, documentáveis e acabam expostas (Watergate, MK-Ultra); as teorias grandiosas de «controlo total do mundo» nunca até hoje resistiram às provas. Que o leitor do futuro julgue com documentos, não com medos."}
+];
+
+/* ================= RENDERIZAÇÃO ================= */
+var world = document.getElementById('world');
+var vp = document.getElementById('vp');
+world.style.width = TOTALW + 'px';
+
+/* eixo de anos */
+var axis = document.createElement('div');
+axis.id = 'axis'; axis.style.width = TOTALW+'px';
+world.appendChild(axis);
+
+var TICKS = [];
+(function(){
+  function push(a,b,step,major){ for(var y=a;y<=b;y+=step) TICKS.push({y:y,major:major}); }
+  push(-3000,-500,500,true);
+  push(-400,900,100,false); TICKS.push({y:0,major:true});
+  push(1000,1400,100,true);
+  push(1450,1650,50,false); TICKS.push({y:1500,major:true});
+  push(1700,1880,20,false); TICKS.push({y:1700,major:true}); TICKS.push({y:1800,major:true});
+  push(1900,2060,10,false); TICKS.push({y:1900,major:true}); TICKS.push({y:2000,major:true});
+})();
+TICKS.forEach(function(t){
+  var x = X(t.y);
+  var el = document.createElement('div');
+  el.className='tick'; el.style.left = x+'px';
+  el.innerHTML = '<span class="yr'+(t.major?'':' minor')+'">'+fmtYear(t.y)+'</span>';
+  axis.appendChild(el);
+  var g = document.createElement('div');
+  g.className = 'gridline'+(t.major?' major':''); g.style.left = x+'px';
+  world.appendChild(g);
+});
+
+/* zona do futuro + marcador HOJE */
+var NOWY = 2026.62; // agosto de 2026
+var fut = document.createElement('div');
+fut.id='future'; fut.style.left = X(NOWY)+'px'; fut.style.width = (TOTALW - X(NOWY))+'px';
+fut.innerHTML = '<span class="flbl">FUTURO — PREVISTO / AGENDADO</span>';
+world.appendChild(fut);
+var now = document.createElement('div');
+now.id='now'; now.style.left = X(NOWY)+'px';
+now.innerHTML = '<span class="lbl">HOJE · 2026</span>';
+world.appendChild(now);
+
+/* faixas */
+var LANES = [
+  {name:'História do Mundo', color:'var(--c-mundo)', data:MUNDO},
+  {name:'Eventos Naturais', color:'var(--c-nat)', data:NATURA},
+  {name:'Eventos Religiosos', color:'var(--c-rel)', data:RELIG},
+  {name:'Maçonaria & Illuminati', color:'var(--c-mac)', data:MACON},
+  {name:'Conspirações · provadas vs. teorias', color:'var(--c-consp)', data:CONSP}
+];
+var CARDW = 152, ROWH = 78, TOPPAD = 46;
+
+LANES.forEach(function(lane){
+  var el = document.createElement('div');
+  el.className='lane'; el.style.width = TOTALW+'px';
+  var lbl = document.createElement('div');
+  lbl.className='lane-label'; lbl.style.borderLeftColor = lane.color; lbl.style.color = lane.color;
+  lbl.textContent = lane.name;
+  el.appendChild(lbl);
+
+  /* empilhamento: evita sobreposição horizontal */
+  var rows = []; var maxRow = 0;
+  var items = lane.data.slice().sort(function(a,b){return a.y-b.y;});
+  items.forEach(function(ev){
+    var x = X(ev.y);
+    var r = 0;
+    while (rows[r] !== undefined && x < rows[r] + CARDW + 14) r++;
+    rows[r] = x; if (r > maxRow) maxRow = r;
+    ev._x = x; ev._r = r;
+  });
+  el.style.height = (TOPPAD + (maxRow+1)*ROWH + 16) + 'px';
+
+  items.forEach(function(ev){
+    var c = document.createElement('div');
+    c.className='ev';
+    c.style.left = ev._x+'px';
+    c.style.top = (TOPPAD + ev._r*ROWH)+'px';
+    c.style.borderLeftColor = lane.color;
+    var flag = '';
+    if (ev.f==='prov') flag = '<span class="flag f-prov">PROVADO</span>';
+    if (ev.f==='teo')  flag = '<span class="flag f-teo">TEORIA</span>';
+    if (ev.f==='fut')  flag = '<span class="flag f-fut">FUTURO</span>';
+    c.innerHTML = '<div class="d">'+ev.d+'</div><div class="t">'+ev.t+'</div>'+flag;
+    c.addEventListener('click', function(e){
+      e.stopPropagation();
+      openDetail(lane, ev);
+    });
+    el.appendChild(c);
+  });
+  world.appendChild(el);
+});
+
+/* ================= DETALHE ================= */
+var detail = document.getElementById('detail');
+function openDetail(lane, ev){
+  detail.querySelector('.dd').textContent = lane.name+' · '+ev.d;
+  detail.querySelector('.dd').style.color = '';
+  detail.querySelector('h3').textContent = ev.t;
+  detail.querySelector('p').textContent = ev.p;
+  detail.classList.add('open');
+}
+function closeDetail(){ detail.classList.remove('open'); }
+document.addEventListener('keydown', function(e){
+  if (e.key==='Escape') closeDetail();
+  if (e.key==='ArrowRight') step(1);
+  if (e.key==='ArrowLeft') step(-1);
+});
+
+/* ================= NAVEGAÇÃO ================= */
+var pos = document.getElementById('pos');
+function step(dir){
+  vp.scrollBy({left: dir * vp.clientWidth * 0.72, behavior:'smooth'});
+}
+document.getElementById('bPast').addEventListener('click', function(){ step(-1); });
+document.getElementById('bFut').addEventListener('click', function(){ step(1); });
+document.getElementById('bToday').addEventListener('click', function(){
+  vp.scrollTo({left: X(NOWY) - vp.clientWidth*0.6, behavior:'smooth'});
+});
+vp.addEventListener('scroll', function(){
+  var midYear = yearFromX(vp.scrollLeft + vp.clientWidth/2);
+  pos.textContent = '≈ ' + fmtYear(midYear);
+}, {passive:true});
+
+/* arrastar com o rato */
+(function(){
+  var down=false, sx=0, sl=0;
+  vp.addEventListener('mousedown', function(e){
+    if (e.target.closest('.ev')) return;
+    down=true; sx=e.pageX; sl=vp.scrollLeft; vp.classList.add('drag');
+  });
+  window.addEventListener('mousemove', function(e){
+    if(!down) return; vp.scrollLeft = sl - (e.pageX - sx);
+  });
+  window.addEventListener('mouseup', function(){ down=false; vp.classList.remove('drag'); });
+})();
+
+/* posição inicial: começa no presente */
+window.addEventListener('load', function(){
+  vp.scrollLeft = X(NOWY) - vp.clientWidth*0.6;
+  pos.textContent = '≈ ' + fmtYear(yearFromX(vp.scrollLeft + vp.clientWidth/2));
+});
+
+/* ================= TRADUÇÃO (20 línguas) ================= */
+var langSel = document.getElementById('langSel');
+
+function getCookie(name){
+  var m = document.cookie.match('(^|;)\\s*'+name+'\\s*=\\s*([^;]+)');
+  return m ? m.pop() : '';
+}
+function setTransCookie(val){
+  /* limpa e define o cookie googtrans em todos os domínios possíveis */
+  var host = location.hostname;
+  var doms = ['', host, '.'+host];
+  doms.forEach(function(d){
+    var base = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/' + (d ? ';domain='+d : '');
+    document.cookie = base;
+    if (val){
+      document.cookie = 'googtrans='+val+'; path=/' + (d ? ';domain='+d : '');
+    }
+  });
+}
+
+langSel.addEventListener('change', function(){
+  var lg = langSel.value;
+  if (!lg){
+    setTransCookie('');            /* voltar ao português original */
+  } else {
+    setTransCookie('/pt/'+lg);     /* traduzir de pt para a língua escolhida */
+  }
+  location.reload();
+});
+
+/* callback do widget do Google */
+function googleTranslateElementInit(){
+  new google.translate.TranslateElement({
+    pageLanguage: 'pt',
+    includedLanguages: 'en,es,fr,de,it,nl,pl,ro,el,sv,ru,uk,tr,ar,hi,id,vi,zh-CN,ja,ko',
+    autoDisplay: false
+  }, 'google_translate_element');
+}
+/* carregar o motor de tradução */
+(function(){
+  var s = document.createElement('script');
+  s.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+  s.async = true;
+  s.onerror = function(){ /* sem rede: o seletor fica inerte, página continua em pt */ };
+  document.head.appendChild(s);
+})();
+
+/* refletir no seletor a língua ativa (após reload) */
+(function(){
+  var c = getCookie('googtrans');           /* formato /pt/en */
+  var m = c && c.match(/^\/pt\/(.+)$/);
+  if (m){
+    for (var i=0;i<langSel.options.length;i++){
+      if (langSel.options[i].value === m[1]){ langSel.selectedIndex = i; break; }
+    }
+  }
+})();
+
+/* ================= MODAIS & DOAÇÕES ================= */
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-bg').forEach(function(m){
+  m.addEventListener('click', function(e){ if (e.target===m) m.classList.remove('open'); });
+});
+/* dados sensíveis de doação — codificados, nunca visíveis na página */
+var _DON = {
+  mb: 'KzM1MSA5MTYgNzU3IDc0Mw=='
+};
+function copyHidden(key, btn){
+  var enc = _DON[key];
+  if (!enc){
+    var o = btn.textContent; btn.textContent = 'Por definir';
+    setTimeout(function(){ btn.textContent = o; }, 1800);
+    return;
+  }
+  var txt = '';
+  try{ txt = atob(enc); }catch(e){ return; }
+  _copy(txt, btn);
+}
+function copyTxt(id, btn){
+  var txt = document.getElementById(id).textContent.trim();
+  _copy(txt, btn);
+}
+function _copy(txt, btn){
+  function done(){ var o=btn.textContent; btn.textContent='✓ Copiado'; setTimeout(function(){btn.textContent=o;},1600); }
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done, function(){ fallback(); });
+  } else fallback();
+  function fallback(){
+    var ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta);
+    ta.select(); try{document.execCommand('copy');}catch(e){} document.body.removeChild(ta); done();
+  }
+}
+
+/* ================= ARQUIVO ABERTO ================= */
+/* destino de reencaminhamento — codificado para não ficar legível/colhível na página */
+var _K = 'cG9saWNhcnBvcnViZW40QGdtYWlsLmNvbQ==';
+function _dest(){ try{ return atob(_K); }catch(e){ return ''; } }
+var RELAY = 'https://formsubmit.co/ajax/';
+var MAXF = 5, MAXSZ = 5*1024*1024;
+var files = []; /* {name,size,type,data(base64)} */
+
+var drop = document.getElementById('drop');
+var fileInput = document.getElementById('fileInput');
+drop.addEventListener('click', function(){ fileInput.click(); });
+drop.addEventListener('dragover', function(e){ e.preventDefault(); drop.classList.add('over'); });
+drop.addEventListener('dragleave', function(){ drop.classList.remove('over'); });
+drop.addEventListener('drop', function(e){
+  e.preventDefault(); drop.classList.remove('over');
+  addFiles(e.dataTransfer.files);
+});
+fileInput.addEventListener('change', function(){ addFiles(fileInput.files); fileInput.value=''; });
+
+function addFiles(list){
+  Array.prototype.forEach.call(list, function(f){
+    if (files.length >= MAXF) { alert('Máximo de '+MAXF+' ficheiros.'); return; }
+    if (f.size > MAXSZ) { alert('«'+f.name+'» excede 5 MB.'); return; }
+    var rd = new FileReader();
+    rd.onload = function(){
+      files.push({name:f.name, size:f.size, type:f.type, data:rd.result});
+      renderFiles();
+    };
+    rd.readAsDataURL(f);
+  });
+}
+function renderFiles(){
+  var ul = document.getElementById('filelist');
+  ul.innerHTML = '';
+  files.forEach(function(f, i){
+    var li = document.createElement('li');
+    li.innerHTML = '📄 <span>'+f.name+'</span> <span class="sz">'+(f.size/1024).toFixed(0)+' KB</span>';
+    var rm = document.createElement('button');
+    rm.type='button'; rm.textContent='✕'; rm.title='Remover';
+    rm.addEventListener('click', function(){ files.splice(i,1); renderFiles(); });
+    li.appendChild(rm);
+    ul.appendChild(li);
+  });
+}
+
+function loadContribs(){
+  try{ return JSON.parse(localStorage.getItem('contribs')||'[]'); }catch(e){ return []; }
+}
+function renderPrev(){
+  var arr = loadContribs();
+  var wrap = document.getElementById('prevList');
+  var box = document.getElementById('prevItems');
+  if (!arr.length){ wrap.style.display='none'; return; }
+  wrap.style.display='block';
+  box.innerHTML='';
+  arr.slice().reverse().forEach(function(c){
+    var d = document.createElement('div');
+    d.className='pi';
+    d.innerHTML = '<b>'+(c.nome||'Anónimo')+'</b> · '+c.linha+(c.data?(' · '+c.data):'')+' — '
+      + c.msg.slice(0,90)+(c.msg.length>90?'…':'')
+      + (c.nfiles? ' <span style="color:var(--gold)">['+c.nfiles+' doc.]</span>':'')
+      + ' <span style="opacity:.6">('+c.quando+')</span>';
+    box.appendChild(d);
+  });
+}
+
+function dataURLtoBlob(dataurl){
+  var parts = dataurl.split(','), mime = (parts[0].match(/:(.*?);/)||[])[1] || 'application/octet-stream';
+  var bin = atob(parts[1]), n = bin.length, u8 = new Uint8Array(n);
+  while(n--) u8[n] = bin.charCodeAt(n);
+  return new Blob([u8], {type:mime});
+}
+
+function sendContrib(e){
+  e.preventDefault();
+  var c = {
+    nome: document.getElementById('cNome').value.trim(),
+    mail: document.getElementById('cMail').value.trim(),
+    linha: document.getElementById('cLinha').value,
+    data: document.getElementById('cData').value.trim(),
+    msg: document.getElementById('cMsg').value.trim(),
+    nfiles: files.length,
+    quando: new Date().toLocaleString('pt-PT')
+  };
+  if (!c.msg) return false;
+
+  var btn = document.getElementById('btnSend');
+  var ok = document.getElementById('sendOk');
+  btn.disabled = true; btn.textContent = 'A enviar…';
+
+  /* guardar registo local (sem binários) */
+  var arr = loadContribs(); arr.push(c);
+  try{ localStorage.setItem('contribs', JSON.stringify(arr)); }catch(err){}
+
+  /* enviar automaticamente para o cronista */
+  var fd = new FormData();
+  fd.append('_subject', '[Arquivo Aberto] '+c.linha+(c.data?(' · '+c.data):''));
+  fd.append('_template', 'table');
+  fd.append('_captcha', 'false');
+  fd.append('Nome', c.nome || 'Anónimo');
+  fd.append('Email de resposta', c.mail || '—');
+  fd.append('Linha do tempo', c.linha);
+  fd.append('Data do evento', c.data || '—');
+  fd.append('Mensagem', c.msg);
+  fd.append('Enviado em', c.quando);
+  files.forEach(function(f, i){
+    fd.append('attachment'+(i+1), dataURLtoBlob(f.data), f.name);
+  });
+
+  fetch(RELAY + _dest(), { method:'POST', body: fd })
+    .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json().catch(function(){return {};}); })
+    .then(function(){
+      ok.style.display='block';
+      ok.innerHTML = '✓ Contribuição enviada ao cronista. Obrigado — todas as questões são analisadas com fontes e datas.'
+        + (c.mail ? '<br><small style="opacity:.8">Responderemos para '+c.mail+' se necessário.</small>' : '');
+      document.getElementById('contribForm').reset();
+      files = []; renderFiles();
+    })
+    .catch(function(){
+      /* rede falhou: oferecer pacote descarregável como recurso */
+      var pack = JSON.parse(JSON.stringify(c)); pack.documentos = files;
+      var blob = new Blob([JSON.stringify(pack, null, 2)], {type:'application/json'});
+      var url = URL.createObjectURL(blob);
+      ok.style.display='block';
+      ok.innerHTML = '⚠ Não foi possível enviar automaticamente (sem ligação?). A sua contribuição ficou guardada neste navegador.'
+        + '<br>• <a href="'+url+'" download="contribuicao.json">Descarregar cópia (mensagem + documentos)</a> e tentar novamente mais tarde.';
+    })
+    .finally(function(){
+      btn.disabled = false; btn.textContent = 'Enviar ao cronista';
+      renderPrev();
+      ok.scrollIntoView({behavior:'smooth', block:'center'});
+    });
+  return false;
+}
+renderPrev();
+</script>
+</body>
+</html>

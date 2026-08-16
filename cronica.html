@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crónica do Mundo — Uma História Universal em Cronologia</title>
+<style>
+  :root{
+    --bg:#0e1116; --bg2:#141922; --card:#1a2130; --ink:#e8e2d5; --ink-dim:#a89f8c;
+    --gold:#c9a45c; --gold-dim:#8a7340; --line:#2c3648;
+    --c-mundo:#c9a45c; --c-europa:#6f9fd8; --c-asia:#d87c6f; --c-africa:#7fbf7a;
+    --c-americas:#c98cd8; --c-mo:#d8c06f; --c-oceania:#6fd8cf;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:Georgia,'Times New Roman',serif;line-height:1.65}
+
+  /* ---------- Cabeçalho ---------- */
+  header{
+    text-align:center;padding:90px 20px 60px;
+    background:
+      radial-gradient(ellipse at 50% -20%, rgba(201,164,92,.14), transparent 60%),
+      linear-gradient(180deg,#10141c 0%, var(--bg) 100%);
+    border-bottom:1px solid var(--line);
+  }
+  .h-orn{color:var(--gold);letter-spacing:.5em;font-size:14px;margin-bottom:18px}
+  header h1{
+    font-size:clamp(34px,6vw,60px);font-weight:normal;letter-spacing:.04em;
+    color:var(--ink);
+  }
+  header h1 em{font-style:italic;color:var(--gold)}
+  .h-sub{
+    max-width:720px;margin:22px auto 0;color:var(--ink-dim);font-size:17px;font-style:italic;
+  }
+  .h-rule{width:120px;height:1px;background:var(--gold-dim);margin:34px auto 0;position:relative}
+  .h-rule::after{content:"❖";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    background:var(--bg);padding:0 12px;color:var(--gold);font-size:13px}
+
+  /* ---------- Navegação ---------- */
+  nav{
+    position:sticky;top:0;z-index:50;background:rgba(14,17,22,.92);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);padding:10px 16px;
+    display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;
+  }
+  nav a{
+    color:var(--ink-dim);text-decoration:none;font-size:13.5px;letter-spacing:.06em;
+    padding:6px 13px;border:1px solid transparent;border-radius:3px;transition:all .2s;
+    font-family:Georgia,serif;
+  }
+  nav a:hover{color:var(--gold);border-color:var(--gold-dim)}
+
+  /* ---------- Pesquisa ---------- */
+  .search-wrap{max-width:680px;margin:44px auto 0;padding:0 20px}
+  .search-box{position:relative}
+  .search-box input{
+    width:100%;background:var(--bg2);border:1px solid var(--line);border-radius:4px;
+    padding:14px 18px 14px 48px;color:var(--ink);font-size:16px;font-family:Georgia,serif;
+    outline:none;transition:border-color .2s;
+  }
+  .search-box input:focus{border-color:var(--gold-dim)}
+  .search-box input::placeholder{color:#5d6577;font-style:italic}
+  .search-box .icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--gold-dim)}
+  #searchInfo{text-align:center;color:var(--ink-dim);font-size:13.5px;margin-top:10px;font-style:italic;min-height:20px}
+
+  /* ---------- Secções de era ---------- */
+  main{max-width:900px;margin:0 auto;padding:20px 20px 80px}
+  section.era{margin-top:70px}
+  .era-head{text-align:center;margin-bottom:44px}
+  .era-num{color:var(--gold-dim);font-size:13px;letter-spacing:.45em;text-transform:uppercase}
+  .era-head h2{font-size:clamp(24px,4vw,34px);font-weight:normal;margin-top:10px;color:var(--ink)}
+  .era-range{color:var(--gold);font-style:italic;margin-top:6px;font-size:16px}
+  .era-desc{max-width:640px;margin:16px auto 0;color:var(--ink-dim);font-size:15.5px}
+
+  /* ---------- Cronologia ---------- */
+  .tl{position:relative;padding-left:34px}
+  .tl::before{content:"";position:absolute;left:8px;top:0;bottom:0;width:1px;
+    background:linear-gradient(180deg,transparent,var(--line) 40px,var(--line) calc(100% - 40px),transparent)}
+  .ev{position:relative;margin-bottom:26px}
+  .ev::before{content:"";position:absolute;left:-30px;top:24px;width:9px;height:9px;border-radius:50%;
+    background:var(--bg);border:2px solid var(--gold-dim)}
+  .ev-card{
+    background:var(--card);border:1px solid var(--line);border-radius:5px;padding:18px 22px;
+    transition:border-color .2s, transform .2s;
+  }
+  .ev-card:hover{border-color:var(--gold-dim)}
+  .ev-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;margin-bottom:6px}
+  .ev-date{
+    color:var(--gold);font-size:15px;letter-spacing:.03em;font-variant:small-caps;white-space:nowrap;
+  }
+  .tag{
+    font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:2px 9px;border-radius:20px;
+    border:1px solid;opacity:.9;font-family:Verdana,Geneva,sans-serif;
+  }
+  .t-mundo{color:var(--c-mundo);border-color:var(--c-mundo)}
+  .t-europa{color:var(--c-europa);border-color:var(--c-europa)}
+  .t-asia{color:var(--c-asia);border-color:var(--c-asia)}
+  .t-africa{color:var(--c-africa);border-color:var(--c-africa)}
+  .t-americas{color:var(--c-americas);border-color:var(--c-americas)}
+  .t-mo{color:var(--c-mo);border-color:var(--c-mo)}
+  .t-oceania{color:var(--c-oceania);border-color:var(--c-oceania)}
+  .ev h3{font-size:18.5px;font-weight:normal;color:var(--ink);margin-bottom:6px}
+  .ev p{color:var(--ink-dim);font-size:15px}
+  .ev.hidden{display:none}
+
+  /* ---------- Nota metodológica / rodapé ---------- */
+  .note{
+    max-width:900px;margin:60px auto 0;padding:28px 30px;background:var(--bg2);
+    border:1px solid var(--line);border-left:3px solid var(--gold-dim);border-radius:4px;
+  }
+  .note h4{color:var(--gold);font-weight:normal;font-size:17px;margin-bottom:10px;font-variant:small-caps;letter-spacing:.08em}
+  .note p{color:var(--ink-dim);font-size:14.5px;margin-bottom:8px}
+  footer{text-align:center;padding:50px 20px 60px;color:#5d6577;font-size:13.5px;border-top:1px solid var(--line);margin-top:70px;font-style:italic}
+  #topBtn{
+    position:fixed;right:22px;bottom:22px;width:44px;height:44px;border-radius:50%;
+    background:var(--card);border:1px solid var(--gold-dim);color:var(--gold);font-size:18px;
+    cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s;z-index:60;font-family:Georgia,serif;
+  }
+  #topBtn.show{opacity:1;pointer-events:auto}
+  @media(max-width:600px){
+    .tl{padding-left:24px}
+    .ev::before{left:-20px}
+    .ev-card{padding:15px 16px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="h-orn">✦ ✦ ✦</div>
+  <h1>Crónica do <em>Mundo</em></h1>
+  <p class="h-sub">Uma história universal em cronologia — das origens do cosmos ao presente,
+  registada com rigor, sem pátria nem partido, ao serviço apenas da memória humana.</p>
+  <div class="h-rule"></div>
+</header>
+
+<nav id="mainNav">
+  <a href="#era1">Origens &amp; Pré-História</a>
+  <a href="#era2">Antiguidade</a>
+  <a href="#era3">Idade Média</a>
+  <a href="#era4">Idade Moderna</a>
+  <a href="#era5">Era das Revoluções</a>
+  <a href="#era6">Século XX</a>
+  <a href="#era7">Século XXI</a>
+</nav>
+
+<div class="search-wrap">
+  <div class="search-box">
+    <span class="icon">⌕</span>
+    <input type="text" id="search" placeholder="Pesquisar um evento, pessoa, lugar ou data… (ex.: Roma, 1453, Revolução)">
+  </div>
+  <div id="searchInfo"></div>
+</div>
+
+<main>
+
+<!-- ============ ERA 1 ============ -->
+<section class="era" id="era1">
+  <div class="era-head">
+    <div class="era-num">Livro Primeiro</div>
+    <h2>Origens &amp; Pré-História</h2>
+    <div class="era-range">≈ 13,8 mil milhões de anos a.p. — c. 3500 a.C.</div>
+    <p class="era-desc">Antes da escrita, a história lê-se nas rochas, nos ossos e nos genes. As datas desta era são estimativas científicas, arredondadas e sujeitas a refinamento contínuo.</p>
+  </div>
+  <div class="tl">
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">≈ 13,8 mil milhões de anos</span><span class="tag t-mundo">Cosmos</span></div>
+    <h3>O Big Bang</h3><p>Origem do universo observável segundo o modelo cosmológico padrão. Toda a matéria, energia, espaço e tempo têm aqui o seu ponto de partida mensurável.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">≈ 4,54 mil milhões de anos</span><span class="tag t-mundo">Terra</span></div>
+    <h3>Formação da Terra</h3><p>O planeta forma-se por acreção a partir do disco protoplanetário do Sol. Datação obtida por radiometria de meteoritos e das rochas mais antigas.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">≈ 3,5–3,8 mil milhões de anos</span><span class="tag t-mundo">Vida</span></div>
+    <h3>Primeiras formas de vida</h3><p>Evidências fósseis e químicas (estromatólitos, isótopos de carbono) indicam vida microbiana na Terra já neste período.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">≈ 66 milhões de anos</span><span class="tag t-mundo">Terra</span></div>
+    <h3>Extinção do Cretácico–Paleogénico</h3><p>Um impacto de asteroide (cratera de Chicxulub, México) contribui decisivamente para a extinção dos dinossauros não-avianos, abrindo caminho à era dos mamíferos.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">≈ 7–6 milhões de anos</span><span class="tag t-africa">África</span></div>
+    <h3>Separação das linhagens humana e dos chimpanzés</h3><p>Estimativas genéticas e fósseis situam neste intervalo o último antepassado comum entre humanos e chimpanzés, em África.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">≈ 3,3–2,6 milhões de anos</span><span class="tag t-africa">África</span></div>
+    <h3>Primeiras ferramentas de pedra</h3><p>Utensílios líticos de Lomekwi (Quénia, c. 3,3 M a.) e da indústria olduvaiense (c. 2,6 M a.) marcam o início da tecnologia.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">≈ 300 000 anos</span><span class="tag t-africa">África</span></div>
+    <h3>Surgimento do Homo sapiens</h3><p>Os fósseis de Jebel Irhoud (Marrocos) e outros achados africanos situam a origem da nossa espécie por volta desta data, em África.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">≈ 70 000–50 000 anos</span><span class="tag t-mundo">Migrações</span></div>
+    <h3>Grande expansão para fora de África</h3><p>A principal migração de Homo sapiens que povoou a Eurásia — e, dela, o resto do mundo — data deste intervalo, segundo genética e arqueologia.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">≈ 65 000–50 000 anos</span><span class="tag t-oceania">Oceânia</span></div>
+    <h3>Povoamento da Austrália</h3><p>Os antepassados dos aborígenes australianos atravessam o mar a partir do Sudeste Asiático — uma das mais antigas travessias marítimas conhecidas da humanidade.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">≈ 40 000 anos</span><span class="tag t-mundo">Cultura</span></div>
+    <h3>Arte rupestre e figurativa</h3><p>Pinturas em grutas de Sulawesi (Indonésia) e da Europa (Chauvet; mais tarde Lascaux e Altamira) atestam o pensamento simbólico plenamente desenvolvido.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">≈ 40 000 anos</span><span class="tag t-europa">Europa</span></div>
+    <h3>Desaparecimento dos Neandertais</h3><p>Os últimos Neandertais extinguem-se; parte do seu ADN sobrevive nas populações humanas atuais não-africanas (1–2%).</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">≈ 20 000–15 000 anos</span><span class="tag t-americas">Américas</span></div>
+    <h3>Povoamento das Américas</h3><p>Humanos entram no continente americano a partir da Beríngia. Pegadas de White Sands (Novo México) sugerem presença possivelmente ainda mais antiga — questão em debate.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">c. 9600 a.C.</span><span class="tag t-mo">Médio Oriente</span></div>
+    <h3>Göbekli Tepe</h3><p>Na Anatólia (Turquia atual), caçadores-recoletores erguem o mais antigo complexo monumental de pedra conhecido, anterior à agricultura plena.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">c. 9500–8000 a.C.</span><span class="tag t-mo">Médio Oriente</span></div>
+    <h3>Revolução Neolítica</h3><p>No Crescente Fértil domesticam-se trigo, cevada, cabras e ovelhas. A agricultura surgirá também, de forma independente, na China, na Mesoamérica, nos Andes e na África ocidental.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">c. 7000 a.C.</span><span class="tag t-asia">Ásia</span></div>
+    <h3>Agricultura na China</h3><p>Cultivo do milho-miúdo no vale do rio Amarelo e do arroz no vale do Yangtzé — berço independente da civilização agrícola asiática.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">c. 3500 a.C.</span><span class="tag t-mundo">Tecnologia</span></div>
+    <h3>A roda e os primeiros veículos</h3><p>As evidências mais antigas de rodas de veículos surgem quase em simultâneo na Mesopotâmia, no Cáucaso e na Europa central.</p></div></div>
+
+  </div>
+</section>
+
+<!-- ============ ERA 2 ============ -->
+<section class="era" id="era2">
+  <div class="era-head">
+    <div class="era-num">Livro Segundo</div>
+    <h2>Antiguidade</h2>
+    <div class="era-range">c. 3500 a.C. — 476 d.C.</div>
+    <p class="era-desc">Com a escrita começa a história propriamente dita. Nascem as cidades, os impérios, as grandes religiões e filosofias — na Mesopotâmia, no Egito, na Índia, na China, na América e no Mediterrâneo.</p>
+  </div>
+  <div class="tl">
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">c. 3400–3100 a.C.</span><span class="tag t-mo">Mesopotâmia</span></div>
+    <h3>Invenção da escrita</h3><p>Na Suméria (Uruk) desenvolve-se a escrita cuneiforme; no Egito, quase em simultâneo, os hieróglifos. A escrita será inventada de forma independente também na China e na Mesoamérica.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">c. 3100 a.C.</span><span class="tag t-africa">Egito</span></div>
+    <h3>Unificação do Egito</h3><p>O Alto e o Baixo Egito unem-se sob uma só coroa (tradição associada a Narmer/Menés), iniciando cerca de três milénios de civilização faraónica.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">c. 2600–2500 a.C.</span><span class="tag t-africa">Egito</span></div>
+    <h3>Pirâmides de Gizé</h3><p>Construção da Grande Pirâmide de Khufu (Quéops) — durante quase quatro mil anos, a mais alta estrutura erguida pela humanidade.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">c. 2600–1900 a.C.</span><span class="tag t-asia">Índia</span></div>
+    <h3>Civilização do Vale do Indo</h3><p>Harappa e Mohenjo-Daro florescem com urbanismo planeado, saneamento e comércio de longa distância. A sua escrita permanece por decifrar.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">c. 1792–1750 a.C.</span><span class="tag t-mo">Mesopotâmia</span></div>
+    <h3>Hamurábi da Babilónia</h3><p>Reinado de Hamurábi, cujo código de leis gravado em pedra é um dos mais antigos e completos corpos jurídicos preservados.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">c. 1600–1046 a.C.</span><span class="tag t-asia">China</span></div>
+    <h3>Dinastia Shang</h3><p>Primeira dinastia chinesa documentada arqueologicamente; os ossos oraculares trazem a mais antiga escrita chinesa conhecida.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">c. 1200–400 a.C.</span><span class="tag t-americas">Mesoamérica</span></div>
+    <h3>Civilização Olmeca</h3><p>No golfo do México floresce a «cultura-mãe» mesoamericana, célebre pelas cabeças colossais de pedra, influenciando maias e civilizações posteriores.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">c. 1200–1150 a.C.</span><span class="tag t-mo">Mediterrâneo</span></div>
+    <h3>Colapso da Idade do Bronze</h3><p>Impérios e cidades do Mediterrâneo oriental (hititas, Micenas, Ugarit) ruem em poucas décadas — uma das maiores crises sistémicas da Antiguidade.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">776 a.C.</span><span class="tag t-europa">Grécia</span></div>
+    <h3>Primeiros Jogos Olímpicos registados</h3><p>Data tradicional dos primeiros Jogos em Olímpia, que serviu aos gregos de referência cronológica (olimpíadas).</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">753 a.C.</span><span class="tag t-europa">Roma</span></div>
+    <h3>Fundação de Roma (data tradicional)</h3><p>Data lendária transmitida por Varrão. A arqueologia confirma povoamento no Palatino desde, pelo menos, o século VIII a.C.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">c. 563–483 a.C.</span><span class="tag t-asia">Índia</span></div>
+    <h3>Vida de Siddhartha Gautama, o Buda</h3><p>Fundador do budismo (datas tradicionais aproximadas; alguns estudiosos situam-no c. 480–400 a.C.). O seu ensino difundir-se-á por toda a Ásia.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">551–479 a.C.</span><span class="tag t-asia">China</span></div>
+    <h3>Confúcio</h3><p>Vida do mestre Kong (Kongzi), cujo pensamento ético e político moldará a civilização chinesa e do Leste asiático durante dois milénios e meio.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">550 a.C.</span><span class="tag t-mo">Pérsia</span></div>
+    <h3>Ciro, o Grande, funda o Império Aqueménida</h3><p>Nasce o maior império até então visto, do Egeu ao Indo, conhecido pela administração por satrapias e por relativa tolerância religiosa.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">509 a.C.</span><span class="tag t-europa">Roma</span></div>
+    <h3>Fundação da República Romana</h3><p>Data tradicional da expulsão do último rei e do início do regime republicano, com cônsules eleitos anualmente e Senado.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">508–507 a.C.</span><span class="tag t-europa">Grécia</span></div>
+    <h3>Reformas de Clístenes em Atenas</h3><p>Instituem a base da democracia ateniense — governo pelos cidadãos (então restrito a homens livres), experiência fundadora do pensamento político ocidental.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">490 e 480–479 a.C.</span><span class="tag t-europa">Grécia</span></div>
+    <h3>Guerras Médicas</h3><p>As cidades gregas repelem as invasões persas: Maratona (490), Termópilas e Salamina (480), Plateias (479).</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">431–404 a.C.</span><span class="tag t-europa">Grécia</span></div>
+    <h3>Guerra do Peloponeso</h3><p>Atenas e Esparta esgotam-se num conflito de 27 anos, narrado por Tucídides — obra fundadora da história como disciplina crítica.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">336–323 a.C.</span><span class="tag t-europa">Helenismo</span></div>
+    <h3>Alexandre, o Grande</h3><p>Em treze anos conquista o Império Persa e chega ao Indo. A sua morte em Babilónia (323 a.C.) abre o período helenístico, que funde culturas grega e orientais.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">c. 268–232 a.C.</span><span class="tag t-asia">Índia</span></div>
+    <h3>Reinado de Asoka</h3><p>O imperador máuria, após a sangrenta guerra de Kalinga, adota e difunde o budismo; os seus éditos em pedra pregam a não-violência e a tolerância.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">221 a.C.</span><span class="tag t-asia">China</span></div>
+    <h3>Qin Shi Huangdi unifica a China</h3><p>Primeiro imperador da China unificada: uniformiza escrita, moeda e medidas; liga muralhas do norte; é sepultado com o exército de terracota.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">264–146 a.C.</span><span class="tag t-europa">Roma</span></div>
+    <h3>Guerras Púnicas</h3><p>Roma e Cartago disputam o Mediterrâneo ocidental. Aníbal atravessa os Alpes (218 a.C.); Cartago é destruída em 146 a.C. Roma torna-se potência hegemónica.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">c. 130 a.C.</span><span class="tag t-asia">Eurásia</span></div>
+    <h3>Abertura da Rota da Seda</h3><p>As missões de Zhang Qian à Ásia central, sob a dinastia Han, inauguram as rotas que ligarão a China ao Mediterrâneo durante séculos.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">44 a.C.</span><span class="tag t-europa">Roma</span></div>
+    <h3>Assassinato de Júlio César</h3><p>Nos Idos de Março, César é morto no Senado. As guerras civis subsequentes porão fim à República.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">27 a.C.</span><span class="tag t-europa">Roma</span></div>
+    <h3>Augusto e o início do Império Romano</h3><p>Otaviano recebe o título de Augusto: começa o Principado e a longa Pax Romana num império que abraçará todo o Mediterrâneo.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">c. 4 a.C.–c. 30/33 d.C.</span><span class="tag t-mo">Judeia</span></div>
+    <h3>Vida de Jesus de Nazaré</h3><p>Pregador judeu da Galileia, crucificado sob Pôncio Pilatos. Do movimento dos seus seguidores nascerá o cristianismo, hoje a maior religião do mundo.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">79 d.C.</span><span class="tag t-europa">Roma</span></div>
+    <h3>Erupção do Vesúvio</h3><p>Pompeia e Herculano são soterradas — e assim preservadas, tornando-se a mais vívida janela arqueológica sobre a vida quotidiana romana.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">c. 105 d.C.</span><span class="tag t-asia">China</span></div>
+    <h3>O papel</h3><p>Cai Lun aperfeiçoa e divulga o fabrico do papel na corte Han — tecnologia que revolucionará o registo do saber em todo o mundo.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">313 d.C.</span><span class="tag t-europa">Roma</span></div>
+    <h3>Édito de Milão</h3><p>Constantino e Licínio concedem liberdade de culto aos cristãos, encerrando as perseguições. Em 380, o Édito de Tessalónica fará do cristianismo religião oficial do império.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">330 d.C.</span><span class="tag t-europa">Roma</span></div>
+    <h3>Fundação de Constantinopla</h3><p>Constantino consagra a nova capital sobre Bizâncio, no Bósforo — futura sede do Império Romano do Oriente durante mais de um milénio.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">c. 320–550 d.C.</span><span class="tag t-asia">Índia</span></div>
+    <h3>Império Gupta</h3><p>«Idade de ouro» clássica da Índia: matemática (numerais posicionais, o zero como conceito operativo), astronomia, literatura sânscrita.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">410 e 476 d.C.</span><span class="tag t-europa">Roma</span></div>
+    <h3>Queda de Roma no Ocidente</h3><p>Roma é saqueada pelos visigodos (410); em 476, Odoacro depõe Rómulo Augústulo, último imperador do Ocidente — marco convencional do fim da Antiguidade. O Império do Oriente prosseguirá até 1453.</p></div></div>
+
+  </div>
+</section>
+
+<!-- ============ ERA 3 ============ -->
+<section class="era" id="era3">
+  <div class="era-head">
+    <div class="era-num">Livro Terceiro</div>
+    <h2>Idade Média</h2>
+    <div class="era-range">476 — 1453</div>
+    <p class="era-desc">Longe de ser uma «idade das trevas» universal, este milénio vê florescer o islão, a China Tang e Song, Bizâncio, os impérios africanos do ouro, os maias e os mongóis — enquanto a Europa se reconstrói lentamente.</p>
+  </div>
+  <div class="tl">
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">527–565</span><span class="tag t-europa">Bizâncio</span></div>
+    <h3>Justiniano I</h3><p>Reconquista parcial do Ocidente, construção de Santa Sofia e compilação do Corpus Iuris Civilis, base do direito civil europeu até hoje.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">541–549</span><span class="tag t-mundo">Pandemia</span></div>
+    <h3>Peste de Justiniano</h3><p>Primeira grande pandemia de peste bubónica documentada, devastando o Mediterrâneo e o Médio Oriente.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">622</span><span class="tag t-mo">Arábia</span></div>
+    <h3>A Hégira</h3><p>Maomé emigra de Meca para Medina — ano 1 do calendário islâmico. À sua morte (632), a Arábia está unificada sob o islão.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">632–750</span><span class="tag t-mo">Islão</span></div>
+    <h3>Expansão árabe-islâmica</h3><p>Em pouco mais de um século, os califados estendem-se do Indo à Península Ibérica (invadida em 711), transformando o mapa político e religioso de três continentes.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">618–907</span><span class="tag t-asia">China</span></div>
+    <h3>Dinastia Tang</h3><p>Apogeu cosmopolita da China clássica: Chang'an é talvez a maior cidade do mundo; florescem a poesia, o comércio na Rota da Seda e a impressão xilográfica.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">750–1258</span><span class="tag t-mo">Islão</span></div>
+    <h3>Califado Abássida e a Idade de Ouro islâmica</h3><p>Bagdade, fundada em 762, torna-se farol mundial do saber: álgebra (al-Khwarizmi), medicina (Avicena), ótica (Alhazen), tradução dos clássicos gregos.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">800</span><span class="tag t-europa">Europa</span></div>
+    <h3>Coroação de Carlos Magno</h3><p>No Natal de 800, o papa Leão III coroa Carlos Magno imperador em Roma — renascimento da ideia imperial no Ocidente.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">c. 793–1066</span><span class="tag t-europa">Europa</span></div>
+    <h3>Era Viking</h3><p>Do ataque a Lindisfarne (793) à batalha de Hastings (1066), os escandinavos comerciam, saqueiam e colonizam da Rússia à Normandia, à Islândia, à Gronelândia e — por volta do ano 1000 — à Terra Nova (L'Anse aux Meadows).</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">c. 250–900</span><span class="tag t-americas">Mesoamérica</span></div>
+    <h3>Período clássico maia</h3><p>Tikal, Palenque, Copán: escrita plena, astronomia precisa e o zero matemático. Por volta de 900, as grandes cidades das terras baixas do sul são abandonadas.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">960–1279</span><span class="tag t-asia">China</span></div>
+    <h3>Dinastia Song</h3><p>Revolução económica e técnica: papel-moeda, bússola de navegação, pólvora em uso militar e impressão com carateres móveis (Bi Sheng, c. 1040).</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1054</span><span class="tag t-europa">Cristandade</span></div>
+    <h3>Grande Cisma do Oriente</h3><p>Excomunhões mútuas entre Roma e Constantinopla consumam a separação entre as Igrejas católica e ortodoxa.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1095–1291</span><span class="tag t-mo">Mediterrâneo</span></div>
+    <h3>As Cruzadas</h3><p>Do apelo de Urbano II em Clermont (1095) à queda de Acre (1291), as expedições latinas ao Levante marcam séculos de contacto e conflito entre cristandade e islão.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1206–1279</span><span class="tag t-asia">Eurásia</span></div>
+    <h3>Império Mongol</h3><p>Gengis Khan é proclamado em 1206; os seus sucessores erguem o maior império contíguo da história, do Pacífico à Europa de leste, unificando as rotas eurasiáticas (Pax Mongolica).</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1215</span><span class="tag t-europa">Inglaterra</span></div>
+    <h3>Magna Carta</h3><p>João Sem Terra é forçado a aceitar limites ao poder régio — documento seminal do constitucionalismo e do princípio de que ninguém está acima da lei.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">c. 1235–1600</span><span class="tag t-africa">África</span></div>
+    <h3>Império do Mali</h3><p>Fundado por Sundiata Keita, domina o comércio transaariano do ouro e do sal. A peregrinação de Mansa Musa a Meca (1324–1325) exibe riqueza lendária; Tombuctu torna-se centro de erudição.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">c. 1100–1450</span><span class="tag t-africa">África</span></div>
+    <h3>Grande Zimbabué</h3><p>Capital de pedra de um reino próspero do comércio de ouro e marfim com a costa suaíli e o Índico.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1347–1351</span><span class="tag t-mundo">Pandemia</span></div>
+    <h3>Peste Negra</h3><p>A peste bubónica mata entre um terço e metade da população europeia, e devasta também o Médio Oriente e o Norte de África — a pandemia mais letal proporcionalmente da história registada.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1337–1453</span><span class="tag t-europa">Europa</span></div>
+    <h3>Guerra dos Cem Anos</h3><p>Inglaterra e França disputam a coroa francesa; Joana d'Arc (1429–1431) inverte o rumo da guerra. Na batalha final consolidam-se as identidades nacionais.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1325–1521</span><span class="tag t-americas">Mesoamérica</span></div>
+    <h3>Império Asteca</h3><p>Tenochtitlán, fundada num lago (data tradicional 1325), torna-se uma das maiores cidades do mundo, capital da Tríplice Aliança mexica.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">c. 1438–1533</span><span class="tag t-americas">Andes</span></div>
+    <h3>Império Inca</h3><p>De Cusco, o Tahuantinsuyo estende-se por 4 000 km de Andes, com estradas monumentais e administração por quipos — o maior império da América pré-colombiana.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1405–1433</span><span class="tag t-asia">China</span></div>
+    <h3>Viagens de Zheng He</h3><p>Sete expedições da frota Ming, com navios gigantescos, percorrem o Índico até à Arábia e à África oriental — décadas antes das navegações europeias.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">29 de maio de 1453</span><span class="tag t-europa">Bizâncio</span></div>
+    <h3>Queda de Constantinopla</h3><p>Maomé II, o Conquistador, toma a cidade; termina o Império Romano do Oriente após mais de mil anos. Marco convencional do fim da Idade Média.</p></div></div>
+
+  </div>
+</section>
+
+<!-- ============ ERA 4 ============ -->
+<section class="era" id="era4">
+  <div class="era-head">
+    <div class="era-num">Livro Quarto</div>
+    <h2>Idade Moderna</h2>
+    <div class="era-range">1453 — 1789</div>
+    <p class="era-desc">Os oceanos ligam pela primeira vez todos os continentes habitados — com comércio, ciência e também conquista, epidemias e escravatura. Renascimento, Reforma e Revolução Científica transformam o pensamento.</p>
+  </div>
+  <div class="tl">
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">c. 1450</span><span class="tag t-europa">Europa</span></div>
+    <h3>Imprensa de Gutenberg</h3><p>Em Mogúncia, Johannes Gutenberg imprime com carateres móveis metálicos; a Bíblia de 42 linhas (c. 1455) inaugura a era do livro impresso em massa no Ocidente.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1415–1498</span><span class="tag t-europa">Portugal</span></div>
+    <h3>Expansão marítima portuguesa</h3><p>De Ceuta (1415) ao cabo da Boa Esperança (Bartolomeu Dias, 1488) e ao caminho marítimo para a Índia (Vasco da Gama, 1498), Portugal abre as rotas atlânticas e do Índico.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1492</span><span class="tag t-mundo">Mundo</span></div>
+    <h3>Colombo chega à América</h3><p>A 12 de outubro, ao serviço de Castela, Colombo desembarca nas Caraíbas. Começa o contacto permanente entre os hemisférios — e a era colonial americana. No mesmo ano, Granada cai e termina o al-Andalus.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1494</span><span class="tag t-mundo">Mundo</span></div>
+    <h3>Tratado de Tordesilhas</h3><p>Portugal e Castela dividem entre si as zonas de expansão ultramarina — primeiro tratado de alcance verdadeiramente planetário.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1500</span><span class="tag t-americas">Brasil</span></div>
+    <h3>Cabral no Brasil</h3><p>A 22 de abril, a armada de Pedro Álvares Cabral avista terra — início da presença portuguesa na América do Sul.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1517</span><span class="tag t-europa">Europa</span></div>
+    <h3>Reforma Protestante</h3><p>Lutero publica as 95 Teses em Wittenberg. A cristandade ocidental fragmenta-se; seguem-se guerras religiosas e profundas mudanças políticas e culturais.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1519–1522</span><span class="tag t-mundo">Mundo</span></div>
+    <h3>Primeira circum-navegação</h3><p>A expedição de Fernão de Magalhães, completada por Juan Sebastián Elcano, prova na prática a esfericidade e a dimensão do planeta.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1521 e 1533</span><span class="tag t-americas">Américas</span></div>
+    <h3>Queda dos impérios asteca e inca</h3><p>Cortés toma Tenochtitlán (1521); Pizarro executa Atahualpa (1533). Conquista, alianças indígenas e sobretudo as epidemias euroasiáticas — que matam a maioria da população nativa americana ao longo do século — refazem um continente.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">séc. XVI–1867</span><span class="tag t-africa">Atlântico</span></div>
+    <h3>Tráfico transatlântico de escravizados</h3><p>Cerca de 12,5 milhões de africanos são embarcados à força para as Américas ao longo de quatro séculos — um dos maiores crimes e deslocações forçadas da história humana.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1543</span><span class="tag t-mundo">Ciência</span></div>
+    <h3>Copérnico e o heliocentrismo</h3><p>«De revolutionibus orbium coelestium» desloca a Terra do centro do cosmos — pedra inaugural da Revolução Científica.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1526–1707</span><span class="tag t-asia">Índia</span></div>
+    <h3>Império Mogol</h3><p>De Babur a Aurangzeb, os mogóis dominam o subcontinente. Sob Shah Jahan constrói-se o Taj Mahal (1632–1653).</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1600–1603</span><span class="tag t-asia">Japão</span></div>
+    <h3>Sekigahara e o xogunato Tokugawa</h3><p>Tokugawa Ieyasu vence em Sekigahara (1600) e funda em 1603 o xogunato que dará ao Japão dois séculos e meio de paz e isolamento controlado (sakoku).</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1609–1610</span><span class="tag t-mundo">Ciência</span></div>
+    <h3>Galileu aponta o telescópio ao céu</h3><p>Luas de Júpiter, fases de Vénus, montanhas na Lua: a observação instrumental confirma o heliocentrismo e funda a astronomia moderna.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1618–1648</span><span class="tag t-europa">Europa</span></div>
+    <h3>Guerra dos Trinta Anos e Paz de Vestefália</h3><p>Conflito devastador na Europa central; os tratados de 1648 consagram a soberania dos Estados — matriz do sistema internacional moderno.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1644</span><span class="tag t-asia">China</span></div>
+    <h3>Queda dos Ming; dinastia Qing</h3><p>Os manchus tomam Pequim e fundam a última dinastia imperial chinesa, que expandirá o território até ao seu máximo histórico.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1687</span><span class="tag t-mundo">Ciência</span></div>
+    <h3>Os «Principia» de Newton</h3><p>Leis do movimento e gravitação universal unificam céus e Terra numa só física matemática — cume da Revolução Científica.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1688–1689</span><span class="tag t-europa">Inglaterra</span></div>
+    <h3>Revolução Gloriosa e Bill of Rights</h3><p>A monarquia inglesa torna-se constitucional; o parlamento afirma a sua supremacia — modelo influente para o liberalismo posterior.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1755</span><span class="tag t-europa">Portugal</span></div>
+    <h3>Terramoto de Lisboa</h3><p>A 1 de novembro, sismo, tsunami e incêndio destroem Lisboa. O desastre abala o pensamento europeu (Voltaire, Kant) e impulsiona a reconstrução pombalina, pioneira do urbanismo anti-sísmico.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">c. 1760–1840</span><span class="tag t-mundo">Economia</span></div>
+    <h3>Revolução Industrial</h3><p>Na Grã-Bretanha, máquina a vapor (Watt, 1769), fiação mecânica e carvão inauguram o crescimento económico moderno — a maior transformação material desde a agricultura.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1770–1788</span><span class="tag t-oceania">Oceânia</span></div>
+    <h3>Cook na Austrália e a colónia de Sydney</h3><p>James Cook cartografa a costa leste australiana (1770); em 1788 chega a Primeira Frota britânica — início da colonização, com profundas consequências para os povos aborígenes.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1776</span><span class="tag t-americas">América</span></div>
+    <h3>Independência dos Estados Unidos</h3><p>A 4 de julho, as Treze Colónias declaram-se independentes. A Constituição de 1787 criará a primeira grande república moderna.</p></div></div>
+
+  </div>
+</section>
+
+<!-- ============ ERA 5 ============ -->
+<section class="era" id="era5">
+  <div class="era-head">
+    <div class="era-num">Livro Quinto</div>
+    <h2>Era das Revoluções</h2>
+    <div class="era-range">1789 — 1914</div>
+    <p class="era-desc">Revoluções políticas e industriais refazem o mundo: caem monarquias absolutas e impérios coloniais americanos, abole-se (tardiamente) a escravatura, e a Europa industrializada reparte África e Ásia entre si.</p>
+  </div>
+  <div class="tl">
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1789</span><span class="tag t-europa">França</span></div>
+    <h3>Revolução Francesa</h3><p>A 14 de julho cai a Bastilha; em agosto, a Declaração dos Direitos do Homem e do Cidadão. O Antigo Regime desmorona-se; as suas ideias percorrerão o mundo.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1791–1804</span><span class="tag t-americas">Caraíbas</span></div>
+    <h3>Revolução Haitiana</h3><p>A única revolta de escravizados vitoriosa da história cria o Haiti — primeira república negra e segundo estado independente das Américas.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1804–1815</span><span class="tag t-europa">Europa</span></div>
+    <h3>Era Napoleónica</h3><p>Napoleão coroa-se imperador (1804), domina a Europa continental e cai definitivamente em Waterloo (1815). O Código Civil e o Congresso de Viena moldarão o século.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1810–1826</span><span class="tag t-americas">América Latina</span></div>
+    <h3>Independências hispano-americanas</h3><p>De Bolívar e San Martín nascem as repúblicas da América espanhola. O Brasil torna-se independente de Portugal em 1822, como império.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1807–1888</span><span class="tag t-mundo">Humanidade</span></div>
+    <h3>Abolição da escravatura</h3><p>A Grã-Bretanha proíbe o tráfico (1807) e a escravatura colonial (1833); os EUA abolem-na em 1865 (13.ª Emenda); o Brasil, último país das Américas, em 1888 (Lei Áurea).</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1825–1869</span><span class="tag t-mundo">Tecnologia</span></div>
+    <h3>Caminhos-de-ferro, telégrafo, Suez</h3><p>Primeira linha férrea pública (1825), telégrafo elétrico (anos 1830–40), cabo transatlântico (1866) e canal do Suez (1869) comprimem o espaço e o tempo do planeta.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1839–1842</span><span class="tag t-asia">China</span></div>
+    <h3>Primeira Guerra do Ópio</h3><p>A derrota Qing perante a Grã-Bretanha abre os «tratados desiguais» e o «século de humilhação» chinês; Hong Kong é cedida.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1848</span><span class="tag t-europa">Europa</span></div>
+    <h3>Primavera dos Povos</h3><p>Vagas revolucionárias liberais e nacionalistas varrem a Europa. No mesmo ano, Marx e Engels publicam o «Manifesto Comunista».</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1859</span><span class="tag t-mundo">Ciência</span></div>
+    <h3>«A Origem das Espécies»</h3><p>Darwin expõe a evolução por seleção natural — a ideia unificadora de toda a biologia.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1861–1865</span><span class="tag t-americas">EUA</span></div>
+    <h3>Guerra Civil Americana</h3><p>O conflito mais mortífero da história dos EUA (c. 620–750 mil mortos) termina com a preservação da União e a abolição da escravatura.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1868</span><span class="tag t-asia">Japão</span></div>
+    <h3>Restauração Meiji</h3><p>O Japão encerra o xogunato e industrializa-se a ritmo vertiginoso — a primeira modernização não-ocidental bem-sucedida, confirmada pela vitória sobre a Rússia em 1905.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1870–1871</span><span class="tag t-europa">Europa</span></div>
+    <h3>Unificações da Itália e da Alemanha</h3><p>Roma torna-se capital italiana (1870); o Império Alemão é proclamado em Versalhes (1871), alterando o equilíbrio europeu.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1884–1885</span><span class="tag t-africa">África</span></div>
+    <h3>Conferência de Berlim</h3><p>As potências europeias regulam a partilha de África sem presença africana. Em 1914, quase todo o continente estará sob domínio colonial — com violências extremas, como no Congo de Leopoldo II.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1876–1903</span><span class="tag t-mundo">Tecnologia</span></div>
+    <h3>Telefone, luz elétrica, automóvel, avião</h3><p>Bell patenteia o telefone (1876); Edison a lâmpada comercial (1879); Benz o automóvel (1886); os irmãos Wright voam em Kitty Hawk (17 de dezembro de 1903).</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1893</span><span class="tag t-oceania">Oceânia</span></div>
+    <h3>Sufrágio feminino na Nova Zelândia</h3><p>Primeiro país autónomo a conceder o voto às mulheres em eleições nacionais — arranque de um movimento mundial que atravessará o século XX.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1905 e 1915</span><span class="tag t-mundo">Ciência</span></div>
+    <h3>Einstein e a relatividade</h3><p>A relatividade restrita (1905) e a geral (1915) reformulam espaço, tempo e gravidade; no mesmo período nasce a física quântica (Planck 1900, Bohr 1913).</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1911–1912</span><span class="tag t-asia">China</span></div>
+    <h3>Queda do Império Chinês</h3><p>A revolução de Xinhai derruba os Qing; Puyi abdica em 1912. Terminam mais de dois mil anos de sistema imperial; proclama-se a República da China.</p></div></div>
+
+  </div>
+</section>
+
+<!-- ============ ERA 6 ============ -->
+<section class="era" id="era6">
+  <div class="era-head">
+    <div class="era-num">Livro Sexto</div>
+    <h2>Século XX</h2>
+    <div class="era-range">1914 — 2000</div>
+    <p class="era-desc">O século mais mortífero e o mais criativo: duas guerras mundiais, totalitarismos e genocídios — mas também descolonização, direitos civis, antibióticos, o átomo, o espaço e a internet.</p>
+  </div>
+  <div class="tl">
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1914–1918</span><span class="tag t-mundo">Guerra</span></div>
+    <h3>Primeira Guerra Mundial</h3><p>Do atentado de Sarajevo (28 de junho de 1914) ao armistício de 11 de novembro de 1918: cerca de 15–20 milhões de mortos, quatro impérios desfeitos (alemão, austro-húngaro, russo, otomano).</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1915–1917</span><span class="tag t-mo">Império Otomano</span></div>
+    <h3>Genocídio Arménio</h3><p>Deportações e massacres pelo governo otomano matam, segundo a maioria dos historiadores, entre 600 mil e 1,5 milhões de arménios.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1917</span><span class="tag t-europa">Rússia</span></div>
+    <h3>Revolução Russa</h3><p>Fevereiro derruba o czar; em outubro (novembro no calendário gregoriano), os bolcheviques de Lenine tomam o poder. Em 1922 nasce a URSS.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1918–1920</span><span class="tag t-mundo">Pandemia</span></div>
+    <h3>Gripe pneumónica («espanhola»)</h3><p>A pandemia de gripe infeta cerca de um terço da humanidade e mata dezenas de milhões — mais do que a própria Grande Guerra.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1928</span><span class="tag t-mundo">Ciência</span></div>
+    <h3>Descoberta da penicilina</h3><p>Alexander Fleming observa o efeito do fungo Penicillium; produzida em massa nos anos 1940, a era dos antibióticos salvará centenas de milhões de vidas.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1929</span><span class="tag t-mundo">Economia</span></div>
+    <h3>Crash de Wall Street e Grande Depressão</h3><p>O colapso bolsista de outubro de 1929 abre a mais profunda crise económica do capitalismo moderno, com desemprego em massa e radicalização política mundial.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1933</span><span class="tag t-europa">Alemanha</span></div>
+    <h3>Hitler chega ao poder</h3><p>Nomeado chanceler a 30 de janeiro, Hitler destrói a democracia de Weimar em meses e instaura a ditadura nazi.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1939–1945</span><span class="tag t-mundo">Guerra</span></div>
+    <h3>Segunda Guerra Mundial</h3><p>Da invasão da Polónia (1 de setembro de 1939) à rendição do Japão (2 de setembro de 1945): 60–80 milhões de mortos, o conflito mais mortífero da história. Marcos: Estalinegrado, Normandia (6 de junho de 1944), queda de Berlim.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1941–1945</span><span class="tag t-europa">Europa</span></div>
+    <h3>O Holocausto</h3><p>A Alemanha nazi assassina sistematicamente cerca de seis milhões de judeus, além de romani, deficientes, prisioneiros soviéticos, polacos e outros. Auschwitz é libertado a 27 de janeiro de 1945.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">6 e 9 de agosto de 1945</span><span class="tag t-mundo">Guerra</span></div>
+    <h3>Hiroxima e Nagasáqui</h3><p>As primeiras — e até hoje únicas — bombas atómicas usadas em guerra matam mais de 100 mil pessoas de imediato. Começa a era nuclear.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">24 de outubro de 1945</span><span class="tag t-mundo">Mundo</span></div>
+    <h3>Fundação da ONU</h3><p>Nasce a Organização das Nações Unidas. Em 1948, a Assembleia Geral adota a Declaração Universal dos Direitos Humanos.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1947</span><span class="tag t-asia">Índia</span></div>
+    <h3>Independência e partição da Índia</h3><p>A 15 de agosto, o Raj britânico dá lugar à Índia e ao Paquistão. A partição desloca 10–15 milhões de pessoas e causa centenas de milhares a mais de um milhão de mortos.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1948</span><span class="tag t-mo">Médio Oriente</span></div>
+    <h3>Criação do Estado de Israel</h3><p>A 14 de maio, Israel declara independência; segue-se a primeira guerra israelo-árabe e o êxodo de centenas de milhares de palestinianos (Nakba) — origem de um conflito ainda por resolver.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1949</span><span class="tag t-asia">China</span></div>
+    <h3>República Popular da China</h3><p>A 1 de outubro, Mao Zedong proclama a RPC após a guerra civil. O Grande Salto em Frente (1958–1962) causará dezenas de milhões de mortos pela fome; a Revolução Cultural (1966–1976) mais convulsões.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1947–1991</span><span class="tag t-mundo">Mundo</span></div>
+    <h3>Guerra Fria</h3><p>EUA e URSS confrontam-se por procuração: Berlim (1948, 1961 — o Muro), Coreia (1950–1953), crise dos mísseis de Cuba (1962), Vietname (fim em 1975), Afeganistão (1979–1989).</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1953</span><span class="tag t-mundo">Ciência</span></div>
+    <h3>Estrutura do ADN</h3><p>Watson e Crick, com base nos dados de Rosalind Franklin e Maurice Wilkins, descrevem a dupla hélice — chave da genética molecular.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1957–1961</span><span class="tag t-mundo">Espaço</span></div>
+    <h3>Início da era espacial</h3><p>Sputnik 1 (4 de outubro de 1957) é o primeiro satélite artificial; Yuri Gagarin (12 de abril de 1961) o primeiro humano no espaço.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1957–1975</span><span class="tag t-africa">África</span></div>
+    <h3>Descolonização de África</h3><p>Do Gana (1957) às colónias portuguesas (1975), dezenas de nações africanas conquistam a independência; só em 1960, o «Ano de África», nascem 17 estados.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1955–1968</span><span class="tag t-americas">EUA</span></div>
+    <h3>Movimento dos direitos civis</h3><p>De Rosa Parks (1955) ao «I Have a Dream» de Martin Luther King (1963) e às leis de 1964–65, os EUA desmantelam a segregação legal. King é assassinado em 1968.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">20 de julho de 1969</span><span class="tag t-mundo">Espaço</span></div>
+    <h3>O Homem na Lua</h3><p>Neil Armstrong e Buzz Aldrin (Apollo 11) caminham na Lua — primeira vez que a humanidade pisa outro corpo celeste.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">25 de abril de 1974</span><span class="tag t-europa">Portugal</span></div>
+    <h3>Revolução dos Cravos</h3><p>Um golpe militar quase sem sangue derruba a mais longa ditadura da Europa ocidental. Portugal democratiza-se e descoloniza; a transição inspira a «terceira vaga» democrática.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1975–1979</span><span class="tag t-asia">Camboja</span></div>
+    <h3>Khmer Vermelho</h3><p>O regime de Pol Pot mata entre 1,5 e 2 milhões de cambojanos — cerca de um quarto da população — por execução, fome e trabalho forçado.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1978–1980</span><span class="tag t-mundo">Mundo</span></div>
+    <h3>Viragens de fim de década</h3><p>Deng Xiaoping inicia as reformas económicas chinesas (1978); a Revolução Iraniana instala a república islâmica (1979); a varíola é declarada erradicada (1980) — primeira doença humana eliminada.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">9 de novembro de 1989</span><span class="tag t-europa">Europa</span></div>
+    <h3>Queda do Muro de Berlim</h3><p>O muro cai; os regimes comunistas do Leste europeu desmoronam-se em cascata. A Alemanha reunifica-se em 1990.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">26 de dezembro de 1991</span><span class="tag t-europa">Mundo</span></div>
+    <h3>Dissolução da URSS</h3><p>A União Soviética extingue-se formalmente; quinze repúblicas tornam-se independentes. Termina a Guerra Fria.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1990–1994</span><span class="tag t-africa">África do Sul</span></div>
+    <h3>Fim do apartheid</h3><p>Mandela é libertado (1990) e eleito presidente nas primeiras eleições multirraciais (1994), encerrando décadas de segregação institucionalizada.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1994</span><span class="tag t-africa">Ruanda</span></div>
+    <h3>Genocídio do Ruanda</h3><p>Em cerca de cem dias, extremistas hutus assassinam aproximadamente 800 mil pessoas, sobretudo tutsis, perante a inação internacional.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1989–1991</span><span class="tag t-mundo">Tecnologia</span></div>
+    <h3>Nasce a World Wide Web</h3><p>Tim Berners-Lee propõe a Web no CERN (1989); o primeiro site fica público em 1991. Na década seguinte, a internet torna-se infraestrutura da civilização.</p></div></div>
+
+  </div>
+</section>
+
+<!-- ============ ERA 7 ============ -->
+<section class="era" id="era7">
+  <div class="era-head">
+    <div class="era-num">Livro Sétimo</div>
+    <h2>Século XXI</h2>
+    <div class="era-range">2001 — presente</div>
+    <p class="era-desc">O historiador escreve aqui com humildade redobrada: falta a distância do tempo. Registam-se apenas os factos já firmemente estabelecidos.</p>
+  </div>
+  <div class="tl">
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">11 de setembro de 2001</span><span class="tag t-americas">EUA</span></div>
+    <h3>Atentados do 11 de Setembro</h3><p>A Al-Qaeda mata quase 3 000 pessoas em Nova Iorque, Washington e na Pensilvânia. Seguem-se as guerras do Afeganistão (2001–2021) e do Iraque (2003–2011).</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">1 de janeiro de 2002</span><span class="tag t-europa">Europa</span></div>
+    <h3>O euro em circulação</h3><p>Notas e moedas da moeda única europeia entram em circulação em doze países — maior união monetária da história moderna.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">2003</span><span class="tag t-mundo">Ciência</span></div>
+    <h3>Genoma humano sequenciado</h3><p>O Projeto Genoma Humano conclui a sequência de referência do nosso ADN, abrindo a era da medicina genómica.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">26 de dezembro de 2004</span><span class="tag t-asia">Índico</span></div>
+    <h3>Tsunami do Índico</h3><p>Um sismo de magnitude ~9,1 ao largo de Samatra gera um tsunami que mata cerca de 230 mil pessoas em 14 países.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">2007–2009</span><span class="tag t-mundo">Economia</span></div>
+    <h3>Crise financeira global</h3><p>O colapso do subprime americano e a falência do Lehman Brothers (setembro de 2008) provocam a pior recessão mundial desde 1929. Em 2007, o iPhone inaugura a era do smartphone.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">2010–2012</span><span class="tag t-mo">Mundo Árabe</span></div>
+    <h3>Primavera Árabe</h3><p>Revoltas populares derrubam governos na Tunísia, Egito e Líbia; na Síria degeneram numa guerra civil devastadora com milhões de refugiados.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">2015</span><span class="tag t-mundo">Mundo</span></div>
+    <h3>Acordo de Paris</h3><p>195 partes comprometem-se a limitar o aquecimento global «bem abaixo» de 2 °C. A ciência do clima estabelecera solidamente a origem humana do aquecimento observado.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">2016–2020</span><span class="tag t-europa">Europa</span></div>
+    <h3>Brexit</h3><p>O Reino Unido vota sair da União Europeia (junho de 2016) e sai formalmente a 31 de janeiro de 2020 — primeira saída de um Estado-membro.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">2020–2023</span><span class="tag t-mundo">Pandemia</span></div>
+    <h3>Pandemia de COVID-19</h3><p>O SARS-CoV-2, identificado em Wuhan no fim de 2019, causa a maior pandemia em um século: milhões de mortos, confinamentos globais e vacinas de mRNA desenvolvidas em tempo recorde.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">24 de fevereiro de 2022</span><span class="tag t-europa">Europa</span></div>
+    <h3>Invasão russa da Ucrânia em larga escala</h3><p>A Rússia lança uma invasão total da Ucrânia — a maior guerra em solo europeu desde 1945, na sequência da anexação da Crimeia em 2014.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">2022–presente</span><span class="tag t-mundo">Tecnologia</span></div>
+    <h3>A inteligência artificial generativa</h3><p>O lançamento público de grandes modelos de linguagem (novembro de 2022) leva a IA ao uso quotidiano de centenas de milhões de pessoas — transformação cujo alcance a história ainda julgará.</p></div></div>
+
+    <div class="ev"><div class="ev-card"><div class="ev-top"><span class="ev-date">7 de outubro de 2023</span><span class="tag t-mo">Médio Oriente</span></div>
+    <h3>Guerra Israel–Hamas</h3><p>O ataque do Hamas a Israel, o mais mortífero da história do país, desencadeia uma guerra devastadora em Gaza, com enorme custo humano — acontecimento ainda em curso à data desta crónica.</p></div></div>
+
+  </div>
+</section>
+
+<div class="note">
+  <h4>Nota do cronista — método e limites</h4>
+  <p><strong style="color:var(--ink)">Sobre a certeza.</strong> Setenta anos debruçado sobre fontes ensinaram-me que a certeza absoluta é rara. Aqui registo apenas o consenso sólido da historiografia e da ciência. Onde a data é tradicional, estimada ou debatida, digo-o expressamente («c.», «data tradicional», «em debate»).</p>
+  <p><strong style="color:var(--ink)">Sobre a imparcialidade.</strong> Procurei dar a cada continente o seu devido lugar e chamar aos crimes pelo seu nome — genocídio, escravatura, conquista — sem poupar nenhuma civilização, incluindo a minha. A história não tem heróis puros nem vilões absolutos; tem seres humanos.</p>
+  <p><strong style="color:var(--ink)">Sobre a seleção.</strong> Nenhuma cronologia contém tudo. Escolhi os acontecimentos de maior consequência para o maior número — sabendo que toda a escolha é já uma interpretação. As datas anteriores à escrita são estimativas científicas; as datas «a.C./d.C.» seguem a convenção do calendário gregoriano proléptico por comodidade universal.</p>
+</div>
+
+</main>
+
+<button id="topBtn" title="Voltar ao topo">↑</button>
+
+<footer>
+  «A história é a mestra da vida.» — Cícero<br>
+  Crónica do Mundo · Compilada com rigor e humildade · MMXXVI
+</footer>
+
+<script>
+(function(){
+  var input = document.getElementById('search');
+  var info = document.getElementById('searchInfo');
+  var events = Array.prototype.slice.call(document.querySelectorAll('.ev'));
+  var eras = Array.prototype.slice.call(document.querySelectorAll('section.era'));
+
+  function norm(s){
+    return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  }
+  events.forEach(function(ev){ ev.dataset.txt = norm(ev.textContent); });
+
+  input.addEventListener('input', function(){
+    var q = norm(input.value.trim());
+    if(!q){
+      events.forEach(function(ev){ ev.classList.remove('hidden'); });
+      eras.forEach(function(e){ e.style.display=''; });
+      info.textContent = '';
+      return;
+    }
+    var n = 0;
+    events.forEach(function(ev){
+      var hit = ev.dataset.txt.indexOf(q) !== -1;
+      ev.classList.toggle('hidden', !hit);
+      if(hit) n++;
+    });
+    eras.forEach(function(era){
+      var any = era.querySelectorAll('.ev:not(.hidden)').length > 0;
+      era.style.display = any ? '' : 'none';
+    });
+    info.textContent = n === 0 ? 'Nenhum evento encontrado para «' + input.value.trim() + '».'
+      : n + (n === 1 ? ' evento encontrado.' : ' eventos encontrados.');
+  });
+
+  var btn = document.getElementById('topBtn');
+  window.addEventListener('scroll', function(){
+    btn.classList.toggle('show', window.scrollY > 600);
+  }, {passive:true});
+  btn.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
+})();
+</script>
+</body>
+</html>
