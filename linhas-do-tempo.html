@@ -259,6 +259,7 @@
   #catbar button:hover{border-color:var(--gold2);color:var(--gold)}
   #catbar button.active{background:rgba(201,164,92,.16);color:var(--gold);border-color:var(--gold2)}
   #catbar .cnt{opacity:.55;font-size:10px}
+  #catbar .hint{width:100%;text-align:center;color:var(--dim);font-size:11px;font-style:italic;letter-spacing:.02em;margin-top:2px}
 </style>
 </head>
 <body>
@@ -341,7 +342,7 @@
   </div>
 </header>
 
-<div id="catbar"></div>
+<div id="catbar"><span class="hint" id="catHint">Combina várias categorias à vontade · toca em «Tudo» para limpar</span></div>
 
 <div id="vp"><div id="world"></div></div>
 
@@ -707,32 +708,49 @@ LANES.forEach(function(lane){
   world.appendChild(el);
 });
 
-/* ================= CATEGORIAS / FILTRO ================= */
+/* ================= CATEGORIAS / FILTRO (multi-seleção) ================= */
 (function(){
   var bar = document.getElementById('catbar');
-  Object.keys(CATS).forEach(function(key){
-    var b = document.createElement('button');
-    b.innerHTML = CATS[key].label + (key==='all' ? '' : '');
-    b.setAttribute('data-cat', key);
-    if (key==='all') b.classList.add('active');
-    b.addEventListener('click', function(){ filterCat(key); });
-    bar.appendChild(b);
-  });
-  function filterCat(cat){
-    bar.querySelectorAll('button').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-cat')===cat); });
+  var active = {};             /* conjunto de categorias ativas (exclui 'all') */
+  function barButton(b){ return b.getAttribute('data-cat'); }
+  var hint = document.getElementById('catHint');
+  function apply(){
+    var keys = Object.keys(active);
+    var any = keys.length === 0;           /* sem filtros = mostra tudo */
+    if (hint){
+      hint.textContent = any
+        ? 'Combina várias categorias à vontade · toca em «Tudo» para limpar'
+        : keys.length + ' filtro' + (keys.length>1?'s':'') + ' ativo' + (keys.length>1?'s':'') + ' · toca em «Tudo» para limpar';
+    }
+    bar.querySelectorAll('button').forEach(function(b){
+      var k = barButton(b);
+      var on = (k === 'all') ? !any : !!active[k];
+      b.classList.toggle('active', on);
+    });
     world.querySelectorAll('.ev').forEach(function(card){
-      var c = card.getAttribute('data-cats')||'';
-      var show = (cat==='all') || c.split(' ').indexOf(cat)>=0;
+      var cats = (card.getAttribute('data-cats')||'').split(' ').filter(Boolean);
+      var show = any || keys.some(function(k){ return cats.indexOf(k) >= 0; });
       card.style.display = show ? '' : 'none';
     });
-    /* esconde linhas que ficam vazias */
     world.querySelectorAll('.lane').forEach(function(lane){
-      var any=false;
-      lane.querySelectorAll('.ev').forEach(function(card){ if(card.style.display!=='none') any=true; });
-      lane.style.display = any ? '' : 'none';
+      var anyEv=false;
+      lane.querySelectorAll('.ev').forEach(function(card){ if(card.style.display!=='none') anyEv=true; });
+      lane.style.display = anyEv ? '' : 'none';
     });
   }
-  window.filterCat = filterCat;
+  Object.keys(CATS).forEach(function(key){
+    var b = document.createElement('button');
+    b.innerHTML = CATS[key].label;
+    b.setAttribute('data-cat', key);
+    if (key==='all') b.classList.add('active');
+    b.addEventListener('click', function(){
+      if (key === 'all'){ active = {}; }
+      else { active[key] = !active[key]; }
+      apply();
+    });
+    bar.appendChild(b);
+  });
+  window.applyCats = apply;
 })();
 
 /* ================= DETALHE ================= */
