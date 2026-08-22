@@ -8,7 +8,7 @@
   :root{
     --bg:#0d1017; --bg2:#131826; --card:#1a2130; --ink:#e8e2d5; --dim:#a89f8c;
     --gold:#c9a45c; --gold2:#8a7340; --line:#2b3547;
-    --c-mundo:#c9a45c; --c-nat:#6fbf7a; --c-mac:#6f9fd8; --c-consp:#d87c6f;
+    --c-mundo:#c9a45c; --c-nat:#6fbf7a; --c-rel:#c98cd8; --c-mac:#6f9fd8; --c-consp:#d87c6f;
     --proven:#7fbf7a; --theory:#e0a34f;
   }
   *{margin:0;padding:0;box-sizing:border-box}
@@ -248,6 +248,17 @@
   #detail .dmore .dsect .ref{border-left:3px solid #d87c6f;padding-left:8px;font-size:13.5px;color:var(--dim);margin-bottom:4px}
   #detail .dmore .src{font-size:13px;color:var(--dim);margin-bottom:5px}
   #detail .dmore .src b{color:var(--ink);font-weight:normal}
+
+  /* ---------- barra de categorias (tabs) ---------- */
+  #catbar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:1000px;margin:16px auto 0;padding:0 14px}
+  #catbar button{
+    background:var(--card);color:var(--dim);border:1px solid var(--line);border-radius:20px;
+    padding:6px 15px;font-family:Verdana,Geneva,sans-serif;font-size:11px;letter-spacing:.07em;text-transform:uppercase;
+    cursor:pointer;transition:all .15s;white-space:nowrap;
+  }
+  #catbar button:hover{border-color:var(--gold2);color:var(--gold)}
+  #catbar button.active{background:rgba(201,164,92,.16);color:var(--gold);border-color:var(--gold2)}
+  #catbar .cnt{opacity:.55;font-size:10px}
 </style>
 </head>
 <body>
@@ -329,6 +340,8 @@
     <span><i class="dotc" style="background:var(--c-consp)"></i> Conspirações — <b style="color:var(--proven)">provadas</b> e <b style="color:var(--theory)">teorias</b></span>
   </div>
 </header>
+
+<div id="catbar"></div>
 
 <div id="vp"><div id="world"></div></div>
 
@@ -617,12 +630,32 @@ world.appendChild(now);
 
 /* faixas */
 var LANES = [
-  {name:'História do Mundo', color:'var(--c-mundo)', data:MUNDO},
-  {name:'Eventos Naturais', color:'var(--c-nat)', data:NATURA},
-  {name:'Eventos Religiosos', color:'var(--c-rel)', data:RELIG},
-  {name:'Maçonaria & Illuminati', color:'var(--c-mac)', data:MACON},
-  {name:'Conspirações · provadas vs. teorias', color:'var(--c-consp)', data:CONSP}
+  {name:'História do Mundo', color:'var(--c-mundo)', data:MUNDO, cat:'world'},
+  {name:'Eventos Naturais', color:'var(--c-nat)', data:NATURA, cat:'nat'},
+  {name:'Eventos Religiosos', color:'var(--c-rel)', data:RELIG, cat:'relig'},
+  {name:'Maçonaria & Illuminati', color:'var(--c-mac)', data:MACON, cat:'mac'},
+  {name:'Conspirações · provadas vs. teorias', color:'var(--c-consp)', data:CONSP, cat:'consp'}
 ];
+/* categorias (extensível: basta acrescentar entradas) */
+var CATS = {
+  all:  {label:'Tudo'},
+  world:{label:'História do Mundo'},
+  relig:{label:'Religiões'},
+  nat:  {label:'Eventos Naturais'},
+  consp:{label:'Conspirações'},
+  mac:  {label:'Maçonaria & Illuminati'},
+  sci:  {label:'Ciência / Descobertas'}
+};
+/* eventos que pertencem a mais de uma categoria (por título) */
+var EXTRA_CATS = {
+  'Bíblia de Gutenberg':'sci',
+  'Principia de Newton':'sci',
+  'A Origem das Espécies':'sci',
+  '1.º voo dos Wright':'sci',
+  'Sputnik':'sci',
+  'Homem na Lua':'sci',
+  'Evento de Tunguska':'sci'
+};
 var CARDW = 152, ROWH = 78, TOPPAD = 46;
 function confColor(c){
   var m={CONFIRMED:'#7fbf7a','HIGHLY_SUPPORTED':'#6f9fd8',PLAUSIBLE:'#5aa8c0',UNCERTAIN:'#e0c04f',CONTESTED:'#e0a34f',REFUTED:'#d87c6f',UNKNOWN:'#7a8395'};
@@ -661,6 +694,10 @@ LANES.forEach(function(lane){
     if (ev.f==='fut')  flag = '<span class="flag f-fut">FUTURO</span>';
     var confdot = ev.conf ? '<span class="confno" style="background:'+confColor(ev.conf)+'"></span>' : '';
     c.innerHTML = confdot+'<div class="d">'+ev.d+'</div><div class="t">'+ev.t+'</div>'+flag;
+    var cats = [lane.cat];
+    var extra = EXTRA_CATS[ev.t];
+    if (extra) cats.push(extra);
+    c.setAttribute('data-cats', cats.join(' '));
     c.addEventListener('click', function(e){
       e.stopPropagation();
       openDetail(lane, ev);
@@ -669,6 +706,34 @@ LANES.forEach(function(lane){
   });
   world.appendChild(el);
 });
+
+/* ================= CATEGORIAS / FILTRO ================= */
+(function(){
+  var bar = document.getElementById('catbar');
+  Object.keys(CATS).forEach(function(key){
+    var b = document.createElement('button');
+    b.innerHTML = CATS[key].label + (key==='all' ? '' : '');
+    b.setAttribute('data-cat', key);
+    if (key==='all') b.classList.add('active');
+    b.addEventListener('click', function(){ filterCat(key); });
+    bar.appendChild(b);
+  });
+  function filterCat(cat){
+    bar.querySelectorAll('button').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-cat')===cat); });
+    world.querySelectorAll('.ev').forEach(function(card){
+      var c = card.getAttribute('data-cats')||'';
+      var show = (cat==='all') || c.split(' ').indexOf(cat)>=0;
+      card.style.display = show ? '' : 'none';
+    });
+    /* esconde linhas que ficam vazias */
+    world.querySelectorAll('.lane').forEach(function(lane){
+      var any=false;
+      lane.querySelectorAll('.ev').forEach(function(card){ if(card.style.display!=='none') any=true; });
+      lane.style.display = any ? '' : 'none';
+    });
+  }
+  window.filterCat = filterCat;
+})();
 
 /* ================= DETALHE ================= */
 var detail = document.getElementById('detail');
