@@ -260,6 +260,14 @@
   #catbar button.active{background:rgba(201,164,92,.16);color:var(--gold);border-color:var(--gold2)}
   #catbar .cnt{opacity:.55;font-size:10px}
   #catbar .hint{width:100%;text-align:center;color:var(--dim);font-size:11px;font-style:italic;letter-spacing:.02em;margin-top:2px}
+
+  /* sub-barra de religiões */
+  #relbar{display:none;flex-wrap:wrap;gap:6px;justify-content:center;max-width:1000px;margin:10px auto 0;padding:0 14px}
+  #relbar.open{display:flex}
+  #relbar .rlabel{color:var(--gold2);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;font-family:Verdana,sans-serif;align-self:center;margin-right:4px}
+  #relbar button{background:var(--bg2);color:var(--dim);border:1px solid var(--line);border-radius:18px;padding:4px 13px;font-family:Georgia,serif;font-size:12px;cursor:pointer;transition:all .15s;white-space:nowrap}
+  #relbar button:hover{border-color:var(--gold2);color:var(--gold)}
+  #relbar button.active{background:rgba(201,164,92,.16);color:var(--gold);border-color:var(--gold2)}
 </style>
 </head>
 <body>
@@ -343,6 +351,7 @@
 </header>
 
 <div id="catbar"><span class="hint" id="catHint">Combina várias categorias à vontade · toca em «Tudo» para limpar</span></div>
+<div id="relbar"><span class="rlabel">Religiões ▸</span></div>
 
 <div id="vp"><div id="world"></div></div>
 
@@ -520,33 +529,49 @@ var NATURA = [
 ];
 
 var RELIG = [
- {y:-3100,d:"c. 3100 a.C.",t:"Primeiros templos e deuses registados",p:"Com a escrita, Suméria e Egito registam os primeiros panteões: Anu, Enlil, Inanna; Ré, Osíris, Ísis. A religião organizada é tão antiga quanto a cidade."},
- {y:-2100,d:"c. 2100 a.C.",t:"Zigurate de Ur",p:"Ur-Nammu ergue o grande zigurate ao deus-lua Nanna — o templo-montanha, modelo da arquitetura sagrada mesopotâmica."},
- {y:-1350,d:"c. 1350 a.C.",t:"Akhenaton e Aton",p:"O faraó impõe o culto quase exclusivo do disco solar — experiência próxima do monoteísmo, revertida após a sua morte."},
- {y:-850,d:"c. 1000 a.C. (datação disputada)",t:"Zoroastro na Pérsia",conf:"CONTESTED",estado:"Contestado",ev:"3–5 fontes",src:3,ov:"Figura histórica provável (Gāthās em Avestano Antigo), mas a datação é contestada: consenso académico em c. 1000 a.C., com tradição alternativa nos séc. VII–VI a.C.",evid:["Gāthās (17 hinos) atribuídos a si — fonte primária","O Avesta não fornece data","Linguística: Avestano Antigo ≈ séc. XV–IX a.C.","Tradição tardia: «258 anos antes de Alexandre» (cálculo retrospetivo)"],srcs:[{tipo:"Primária",nome:"Avesta / Gāthās (Yasna)",ano:"oral; escrita sassânida"},{tipo:"Secundária",nome:"Encyclopædia Iranica",ano:"2025"},{tipo:"Secundária",nome:"Malandra / Kellens / Boyce"}],views:["Data antiga (séc. XV–IX a.C.) via linguística — Boyce, Kellens","Data tardia (séc. VII–VI a.C.) via tradição — Gnoli","Dúvida sobre a própria existência — Kellens/Stausberg"],cont:["Data exata","Local de nascimento","Se todas as Gāthās são dele"],unk:["Data precisa","Local de nascimento","Detalhes biográficos com registo material"],p:"O zoroastrismo — Ahura Mazda, luta cósmica entre bem e mal, juízo final. Datação disputada; a dimensão da influência sobre judaísmo, cristianismo e islão também é debatida."},
- {y:-800,d:"c. 800–200 a.C.",t:"«Era Axial»",p:"Num mesmo arco temporal surgem os Upanixades e o Buda na Índia, Confúcio e Lao Tsé na China, os profetas de Israel e os filósofos gregos — as bases espirituais que perduram."},
- {y:-586,d:"587/586 a.C.",t:"Destruição do 1.º Templo",conf:"HIGHLY_SUPPORTED",estado:"Bem suportado",ev:"3–5 fontes",src:3,ov:"Consenso: 587/586 a.C. (diferença de calendário babilónico/judaico). Algumas cronologias teológicas propõem 607 a.C., sem suporte nos registos babilónicos.",p:"Nabucodonosor II destrói o Templo de Jerusalém; no exílio babilónico consolida-se o monoteísmo judaico e compila-se boa parte da Bíblia hebraica."},
- {y:-435,d:"c. 5.º séc. a.C. (tradicional: 528 a.C.)",t:"Iluminação do Buda",conf:"CONTESTED",estado:"Contestado",ev:"3–5 fontes",src:3,ov:"Datação disputada: a cronologia tradicional (528 a.C.) foi questionada no simpósio de Göttingen (1988); o consenso académico atual situa a morte do Buda em c. 400 a.C., pelo que a iluminação rondaria c. 435 a.C.",evid:["Cronologia tradicional (long chronology) — rejeitada em grande parte","Simpósio de Göttingen (1988): morte entre 486–368 a.C., consenso ≈ 400 a.C.","Calibração com o reinado de Aśoka (c. 268 a.C.)","Iluminação aos 35 anos + vida de 80 → ≈ 435 a.C."],srcs:[{tipo:"Secundária",nome:"Internet Encyclopedia of Philosophy",ano:"Gombrich, IUP"},{tipo:"Secundária",nome:"D.L. Cousins (crítica a Bechert)",ano:"1992-97"},{tipo:"Secundária",nome:"Open University"}],views:["Morte c. 486 a.C. (long chronology)","Morte c. 400 a.C. (consenso pós-1988)","Morte c. 368 a.C. (short chronology)"],cont:["Data exata da morte/iluminação","Cronologia curta vs longa"],unk:["Não há registo contemporâneo — a data é reconstruída"],p:"Segundo a tradição, Siddhartha Gautama atinge o despertar em Bodh Gaya e prega o primeiro sermão em Sarnath — nasce o budismo. Data da iluminação contestada (ver nota)."},
- {y:-250,d:"c. 250 a.C.",t:"Asoka difunde o budismo",p:"O imperador máuria envia missões budistas ao Ceilão e ao mundo helenístico — primeira grande expansão missionária da história."},
- {y:30,d:"c. 30/33 d.C.",t:"Crucificação de Jesus",conf:"CONTESTED",estado:"Contestado",ev:"3–5 fontes",src:3,ov:"Só há duas datas plausíveis (7 abr 30 / 3 abr 33); a maioria dos especialistas prefere 30. A execução sob Pôncio Pilatos, na Páscoa, é um facto bem suportado.",p:"Jesus de Nazaré é executado em Jerusalém sob Pôncio Pilatos. As comunidades dos seus seguidores espalham-se pelo império em poucas décadas. Datação: c. 30/33 d.C."},
- {y:70,d:"70 d.C.",t:"Destruição do 2.º Templo",p:"Tito arrasa o Templo de Jerusalém. O judaísmo reorganiza-se em torno da sinagoga e da Torá — judaísmo rabínico — na diáspora."},
- {y:313,d:"313",t:"Édito de Milão",p:"Constantino concede liberdade de culto aos cristãos. Em 325, o Concílio de Niceia define o credo; em 380, o cristianismo é religião oficial de Roma."},
- {y:610,d:"c. 610",t:"Revelação de Maomé",p:"Segundo a tradição islâmica, Maomé recebe as primeiras revelações do Corão no monte Hira, perto de Meca. A Hégira (622) marca o ano 1 islâmico."},
- {y:632,d:"632",t:"Morte de Maomé e expansão",p:"À morte do Profeta segue-se a divisão sunitas/xiitas (questão da sucessão, consumada em Carbala, 680) e a expansão do islão em três continentes."},
- {y:788,d:"séc. VIII–IX",t:"Shankara e o hinduísmo clássico",p:"Adi Shankara sistematiza o Vedanta; consolida-se o hinduísmo devocional dos grandes templos que define a Índia até hoje."},
- {y:1054,d:"1054",t:"Grande Cisma",p:"Roma e Constantinopla excomungam-se mutuamente: separação definitiva entre catolicismo e ortodoxia."},
- {y:1096,d:"1096–1291",t:"Era das Cruzadas",p:"Guerras santas entre cristandade latina e islão pelo Levante; marcam durante séculos as relações entre as duas civilizações."},
- {y:1469,d:"1469",t:"Nasce Guru Nanak",p:"Fundador do sikhismo no Punjab: um só Deus, igualdade entre castas e géneros. O Guru Granth Sahib torna-se a escritura eterna dos sikhs."},
- {y:1517,d:"1517",t:"Reforma Protestante",p:"As 95 Teses de Lutero dividem a cristandade ocidental. Calvino, a Reforma inglesa e a Contra-Reforma católica (Trento, 1545–63) refazem o mapa religioso europeu."},
- {y:1620,d:"1620",t:"Mayflower e a liberdade religiosa",p:"Puritanos fundam Plymouth fugindo à perseguição; a experiência americana consagrará a separação Igreja–Estado (1.ª Emenda, 1791)."},
- {y:1830,d:"séc. XIX",t:"Novos movimentos religiosos",p:"Mórmons (1830), adventistas, testemunhas de Jeová, bahá'í (1863): a era moderna multiplica confissões — e o pentecostalismo (Azusa Street, 1906) tornar-se-á o ramo cristão que mais cresce."},
- {y:1869,d:"1869–1870",t:"Concílio Vaticano I",p:"Define a infalibilidade papal, no auge do confronto entre a Igreja e a modernidade liberal."},
- {y:1947,d:"1947–48",t:"Manuscritos do Mar Morto",p:"Descobertos em Qumran: os mais antigos manuscritos bíblicos conhecidos, janela única sobre o judaísmo do tempo de Jesus."},
- {y:1948,d:"1948",t:"Israel e as religiões em movimento",p:"Criação do Estado de Israel; a partição da Índia (1947) redesenha fronteiras hindu-muçulmanas; começa a era das grandes migrações religiosas contemporâneas."},
- {y:1962,d:"1962–1965",t:"Concílio Vaticano II",p:"A Igreja Católica abre-se ao mundo moderno: missa nas línguas vernáculas, diálogo inter-religioso, liberdade religiosa (Nostra Aetate, Dignitatis Humanae)."},
- {y:1979,d:"1979",t:"Revolução Iraniana",p:"Khomeini instala a república islâmica no Irão — o regresso da religião ao centro da política mundial marca as décadas seguintes."},
- {y:2013,d:"2013",t:"Papa Francisco",p:"Primeiro papa americano e jesuíta, eleito após a renúncia de Bento XVI (a primeira em quase 600 anos, desde 1415)."},
- {y:2033,d:"2033 (ou 2030, segundo a datação mais comum)",t:"Bimilenário da crucificação",f:"fut",conf:"CONTESTED",estado:"Contestado",ov:"Aniversário calculado sobre a data da morte — que é contestada (30 vs 33 d.C.). Se a datação mais aceite (30 d.C.) estiver certa, o bimilenário seria em 2030.",p:"Cristãos prepararão o jubileu dos 2000 anos da morte de Jesus. O ano depende da datação: 2033 (tradição 33 d.C.) ou 2030 (datação mais comum, 30 d.C.)."}
+ {y:-3100,d:"c. 3100 a.C.",t:"Primeiros templos e deuses registados",rel:"outra",p:"Com a escrita, Suméria e Egito registam os primeiros panteões: Anu, Enlil, Inanna; Ré, Osíris, Ísis. A religião organizada é tão antiga quanto a cidade."},
+ {y:-2100,d:"c. 2100 a.C.",t:"Zigurate de Ur",rel:"outra",p:"Ur-Nammu ergue o grande zigurate ao deus-lua Nanna — o templo-montanha, modelo da arquitetura sagrada mesopotâmica."},
+ {y:-1350,d:"c. 1350 a.C.",t:"Akhenaton e Aton",rel:"outra",p:"O faraó impõe o culto quase exclusivo do disco solar — experiência próxima do monoteísmo, revertida após a sua morte."},
+ {y:-850,d:"c. 1000 a.C. (datação disputada)",t:"Zoroastro na Pérsia",rel:"outra",conf:"CONTESTED",estado:"Contestado",ev:"3–5 fontes",src:3,ov:"Figura histórica provável (Gāthās em Avestano Antigo), mas a datação é contestada: consenso académico em c. 1000 a.C., com tradição alternativa nos séc. VII–VI a.C.",evid:["Gāthās (17 hinos) atribuídos a si — fonte primária","O Avesta não fornece data","Linguística: Avestano Antigo ≈ séc. XV–IX a.C.","Tradição tardia: «258 anos antes de Alexandre» (cálculo retrospetivo)"],srcs:[{tipo:"Primária",nome:"Avesta / Gāthās (Yasna)",ano:"oral; escrita sassânida"},{tipo:"Secundária",nome:"Encyclopædia Iranica",ano:"2025"},{tipo:"Secundária",nome:"Malandra / Kellens / Boyce"}],views:["Data antiga (séc. XV–IX a.C.) via linguística — Boyce, Kellens","Data tardia (séc. VII–VI a.C.) via tradição — Gnoli","Dúvida sobre a própria existência — Kellens/Stausberg"],cont:["Data exata","Local de nascimento","Se todas as Gāthās são dele"],unk:["Data precisa","Local de nascimento","Detalhes biográficos com registo material"],p:"O zoroastrismo — Ahura Mazda, luta cósmica entre bem e mal, juízo final. Datação disputada; a dimensão da influência sobre judaísmo, cristianismo e islão também é debatida."},
+ {y:-800,d:"c. 800–200 a.C.",t:"«Era Axial»",rel:"outra",p:"Num mesmo arco temporal surgem os Upanixades e o Buda na Índia, Confúcio e Lao Tsé na China, os profetas de Israel e os filósofos gregos — as bases espirituais que perduram."},
+ {y:-586,d:"587/586 a.C.",t:"Destruição do 1.º Templo",rel:"jud",conf:"HIGHLY_SUPPORTED",estado:"Bem suportado",ev:"3–5 fontes",src:3,ov:"Consenso: 587/586 a.C. (diferença de calendário babilónico/judaico). Algumas cronologias teológicas propõem 607 a.C., sem suporte nos registos babilónicos.",p:"Nabucodonosor II destrói o Templo de Jerusalém; no exílio babilónico consolida-se o monoteísmo judaico e compila-se boa parte da Bíblia hebraica."},
+ {y:-435,d:"c. 5.º séc. a.C. (tradicional: 528 a.C.)",t:"Iluminação do Buda",rel:"bud",conf:"CONTESTED",estado:"Contestado",ev:"3–5 fontes",src:3,ov:"Datação disputada: a cronologia tradicional (528 a.C.) foi questionada no simpósio de Göttingen (1988); o consenso académico atual situa a morte do Buda em c. 400 a.C., pelo que a iluminação rondaria c. 435 a.C.",evid:["Cronologia tradicional (long chronology) — rejeitada em grande parte","Simpósio de Göttingen (1988): morte entre 486–368 a.C., consenso ≈ 400 a.C.","Calibração com o reinado de Aśoka (c. 268 a.C.)","Iluminação aos 35 anos + vida de 80 → ≈ 435 a.C."],srcs:[{tipo:"Secundária",nome:"Internet Encyclopedia of Philosophy",ano:"Gombrich, IUP"},{tipo:"Secundária",nome:"D.L. Cousins (crítica a Bechert)",ano:"1992-97"},{tipo:"Secundária",nome:"Open University"}],views:["Morte c. 486 a.C. (long chronology)","Morte c. 400 a.C. (consenso pós-1988)","Morte c. 368 a.C. (short chronology)"],cont:["Data exata da morte/iluminação","Cronologia curta vs longa"],unk:["Não há registo contemporâneo — a data é reconstruída"],p:"Segundo a tradição, Siddhartha Gautama atinge o despertar em Bodh Gaya e prega o primeiro sermão em Sarnath — nasce o budismo. Data da iluminação contestada (ver nota)."},
+ {y:-250,d:"c. 250 a.C.",t:"Asoka difunde o budismo",rel:"bud",p:"O imperador máuria envia missões budistas ao Ceilão e ao mundo helenístico — primeira grande expansão missionária da história."},
+ {y:30,d:"c. 30/33 d.C.",t:"Crucificação de Jesus",rel:"crist",conf:"CONTESTED",estado:"Contestado",ev:"3–5 fontes",src:3,ov:"Só há duas datas plausíveis (7 abr 30 / 3 abr 33); a maioria dos especialistas prefere 30. A execução sob Pôncio Pilatos, na Páscoa, é um facto bem suportado.",p:"Jesus de Nazaré é executado em Jerusalém sob Pôncio Pilatos. As comunidades dos seus seguidores espalham-se pelo império em poucas décadas. Datação: c. 30/33 d.C."},
+ {y:70,d:"70 d.C.",t:"Destruição do 2.º Templo",rel:"jud",p:"Tito arrasa o Templo de Jerusalém. O judaísmo reorganiza-se em torno da sinagoga e da Torá — judaísmo rabínico — na diáspora."},
+ {y:313,d:"313",t:"Édito de Milão",rel:"crist",p:"Constantino concede liberdade de culto aos cristãos. Em 325, o Concílio de Niceia define o credo; em 380, o cristianismo é religião oficial de Roma."},
+ {y:610,d:"c. 610",t:"Revelação de Maomé",rel:"isla",p:"Segundo a tradição islâmica, Maomé recebe as primeiras revelações do Corão no monte Hira, perto de Meca. A Hégira (622) marca o ano 1 islâmico."},
+ {y:632,d:"632",t:"Morte de Maomé e expansão",rel:"isla",p:"À morte do Profeta segue-se a divisão sunitas/xiitas (questão da sucessão, consumada em Carbala, 680) e a expansão do islão em três continentes."},
+ {y:788,d:"séc. VIII–IX",t:"Shankara e o hinduísmo clássico",rel:"hind",p:"Adi Shankara sistematiza o Vedanta; consolida-se o hinduísmo devocional dos grandes templos que define a Índia até hoje."},
+ {y:1054,d:"1054",t:"Grande Cisma",rel:"crist",p:"Roma e Constantinopla excomungam-se mutuamente: separação definitiva entre catolicismo e ortodoxia."},
+ {y:1096,d:"1096–1291",t:"Era das Cruzadas",rel:"crist",p:"Guerras santas entre cristandade latina e islão pelo Levante; marcam durante séculos as relações entre as duas civilizações."},
+ {y:1469,d:"1469",t:"Nasce Guru Nanak",rel:"outra",p:"Fundador do sikhismo no Punjab: um só Deus, igualdade entre castas e géneros. O Guru Granth Sahib torna-se a escritura eterna dos sikhs."},
+ {y:1517,d:"1517",t:"Reforma Protestante",rel:"crist",p:"As 95 Teses de Lutero dividem a cristandade ocidental. Calvino, a Reforma inglesa e a Contra-Reforma católica (Trento, 1545–63) refazem o mapa religioso europeu."},
+ {y:1620,d:"1620",t:"Mayflower e a liberdade religiosa",rel:"crist",p:"Puritanos fundam Plymouth fugindo à perseguição; a experiência americana consagrará a separação Igreja–Estado (1.ª Emenda, 1791)."},
+ {y:1830,d:"séc. XIX",t:"Novos movimentos religiosos",rel:"outra",p:"Mórmons (1830), adventistas, testemunhas de Jeová, bahá'í (1863): a era moderna multiplica confissões — e o pentecostalismo (Azusa Street, 1906) tornar-se-á o ramo cristão que mais cresce."},
+ {y:1869,d:"1869–1870",t:"Concílio Vaticano I",rel:"crist",p:"Define a infalibilidade papal, no auge do confronto entre a Igreja e a modernidade liberal."},
+ {y:1947,d:"1947–48",t:"Manuscritos do Mar Morto",rel:"jud",p:"Descobertos em Qumran: os mais antigos manuscritos bíblicos conhecidos, janela única sobre o judaísmo do tempo de Jesus."},
+ {y:1948,d:"1948",t:"Israel e as religiões em movimento",rel:"jud",p:"Criação do Estado de Israel; a partição da Índia (1947) redesenha fronteiras hindu-muçulmanas; começa a era das grandes migrações religiosas contemporâneas."},
+ {y:1962,d:"1962–1965",t:"Concílio Vaticano II",rel:"crist",p:"A Igreja Católica abre-se ao mundo moderno: missa nas línguas vernáculas, diálogo inter-religioso, liberdade religiosa (Nostra Aetate, Dignitatis Humanae)."},
+ {y:1979,d:"1979",t:"Revolução Iraniana",rel:"isla",p:"Khomeini instala a república islâmica no Irão — o regresso da religião ao centro da política mundial marca as décadas seguintes."},
+ {y:2013,d:"2013",t:"Papa Francisco",rel:"crist",p:"Primeiro papa americano e jesuíta, eleito após a renúncia de Bento XVI (a primeira em quase 600 anos, desde 1415)."},
+ {y:2033,d:"2033 (ou 2030, segundo a datação mais comum)",t:"Bimilenário da crucificação",rel:"crist",f:"fut",conf:"CONTESTED",estado:"Contestado",ov:"Aniversário calculado sobre a data da morte — que é contestada (30 vs 33 d.C.). Se a datação mais aceite (30 d.C.) estiver certa, o bimilenário seria em 2030.",p:"Cristãos prepararão o jubileu dos 2000 anos da morte de Jesus. O ano depende da datação: 2033 (tradição 33 d.C.) ou 2030 (datação mais comum, 30 d.C.)."},
+{y:-1250,d:"c. 13.º séc. a.C. (tradicional)",t:"Êxodo / Moisés",rel:"jud",conf:"PLAUSIBLE",estado:"Plausível",ov:"Evento central da tradição judaica; a data e a historicidade do Êxodo são debatidas entre historiadores.",p:"Tradição judaica: libertação do Egipto e aliança no Sinai. Historicidade discutida; não há consenso sobre a data."},
+{y:200,d:"c. 200",t:"Mishná compilada",rel:"jud",conf:"HIGHLY_SUPPORTED",estado:"Bem suportado",p:"Recolha escrita da Lei Oral em torno de Judá, o Príncipe; base do judaísmo rabínico."},
+{y:500,d:"c. 500",t:"Talmude Babilónico",rel:"jud",conf:"HIGHLY_SUPPORTED",estado:"Bem suportado",p:"Finalizado o Talmud da Babilónia, que acompanha a vida judaica na diáspora."},
+{y:1190,d:"1190",t:"Maimónides — Guia dos Perplexos",rel:"jud",conf:"HIGHLY_SUPPORTED",estado:"Bem suportado",p:"Filósofo e codificador judaico; a obra reconcilia fé e razão (Aristóteles)."},
+{y:33,d:"c. 33",t:"Pentecostes",rel:"crist",conf:"PLAUSIBLE",estado:"Plausível",p:"Segundo os Atos dos Apóstolos, o Espírito Santo desce sobre os discípulos; tradicionalmente marca o nascimento da Igreja."},
+{y:325,d:"325",t:"Concílio de Niceia",rel:"crist",conf:"HIGHLY_SUPPORTED",estado:"Bem suportado",p:"Define o Credo e condena o arianismo; bispos e Constantino fixam a doutrina cristã."},
+{y:380,d:"380",t:"Cristianismo religião oficial",rel:"crist",conf:"HIGHLY_SUPPORTED",estado:"Bem suportado",p:"Édito de Tessalónica (Teodósio): o cristianismo torna-se a religião oficial do Império romano."},
+{y:622,d:"622",t:"Hégira",rel:"isla",conf:"CONFIRMED",estado:"Confirmado",p:"Fuga de Maomé de Meca para Medina; marca o ano 1 do calendário islâmico."},
+{y:680,d:"680",t:"Batalha de Carbala",rel:"isla",conf:"HIGHLY_SUPPORTED",estado:"Bem suportado",p:"Morte de Huceine (neto de Maomé); consuma-se o cisma sunita–xiita."},
+{y:750,d:"c. 750",t:"Expansão dos califados",rel:"isla",conf:"HIGHLY_SUPPORTED",estado:"Bem suportado",p:"No auge, o califado omíada estende-se da Península Ibérica ao Indo; a civilização islâmica floresce."},
+{y:-435,d:"c. 5.º séc. a.C.",t:"Primeiro sermão de Sarnath",rel:"bud",conf:"PLAUSIBLE",estado:"Plausível",p:"O Buda prega o primeiro sermão (Dhammacakkappavattana), pôr em movimento a roda do Dharma."},
+{y:67,d:"séc. I d.C.",t:"Budismo na China",rel:"bud",conf:"PLAUSIBLE",estado:"Plausível",p:"O budismo chega à China pela Rota da Seda; a tradição situa a chegada em meados do séc. I d.C."},
+{y:552,d:"552",t:"Budismo no Japão",rel:"bud",conf:"HIGHLY_SUPPORTED",estado:"Bem suportado",p:"Introdução oficial do budismo no Japão (tradicionalmente ligada à embaixada do reino de Baekje)."},
+{y:-1200,d:"c. 1500–500 a.C.",t:"Vedas compilados",rel:"hind",conf:"PLAUSIBLE",estado:"Plausível",p:"Rigveda e restantes Veda: os textos sagrados mais antigos do hinduísmo, transmitidos oralmente e escritos mais tarde. Datação aproximada."},
+{y:-100,d:"c. 2.º séc. a.C. – 2.º séc. d.C.",t:"Bhagavad Gita",rel:"hind",conf:"PLAUSIBLE",estado:"Plausível",p:"Diálogo entre Krishna e Arjuna; parte da epopeia Mahabharata. Datação aproximada."},
+{y:1150,d:"séc. XII",t:"Templo de Angkor Wat",rel:"hind",conf:"HIGHLY_SUPPORTED",estado:"Bem suportado",p:"O maior templo do mundo, dedicado a Vishnu; testemunho do hinduísmo no Sudeste Asiático."},
 ];
 
 var MACON = [
@@ -657,6 +682,16 @@ var EXTRA_CATS = {
   'Homem na Lua':'sci',
   'Evento de Tunguska':'sci'
 };
+/* sub-categorias da faixa Religiões (extensível: bastar acrescentar entradas) */
+var RELSUB = {
+  all:  'Todas',
+  jud:  'Judaísmo',
+  crist:'Cristianismo',
+  isla: 'Islão',
+  bud:  'Budismo',
+  hind: 'Hinduísmo',
+  outra:'Outras tradições'
+};
 var CARDW = 152, ROWH = 78, TOPPAD = 46;
 function confColor(c){
   var m={CONFIRMED:'#7fbf7a','HIGHLY_SUPPORTED':'#6f9fd8',PLAUSIBLE:'#5aa8c0',UNCERTAIN:'#e0c04f',CONTESTED:'#e0a34f',REFUTED:'#d87c6f',UNKNOWN:'#7a8395'};
@@ -699,6 +734,7 @@ LANES.forEach(function(lane){
     var extra = EXTRA_CATS[ev.t];
     if (extra) cats.push(extra);
     c.setAttribute('data-cats', cats.join(' '));
+    c.setAttribute('data-rel', ev.rel||'');
     c.addEventListener('click', function(e){
       e.stopPropagation();
       openDetail(lane, ev);
@@ -711,12 +747,15 @@ LANES.forEach(function(lane){
 /* ================= CATEGORIAS / FILTRO (multi-seleção) ================= */
 (function(){
   var bar = document.getElementById('catbar');
-  var active = {};             /* conjunto de categorias ativas (exclui 'all') */
+  var relbar = document.getElementById('relbar');
+  var active = {};             /* categorias ativas (exclui 'all') */
+  var relActive = {};          /* sub-religiões ativas */
   function barButton(b){ return b.getAttribute('data-cat'); }
   var hint = document.getElementById('catHint');
   function apply(){
     var keys = Object.keys(active);
-    var any = keys.length === 0;           /* sem filtros = mostra tudo */
+    var any = keys.length === 0;           /* sem filtros na barra principal */
+    var onRel = !!active['relig'];         /* 'Religiões' ativa? */
     if (hint){
       hint.textContent = any
         ? 'Combina várias categorias à vontade · toca em «Tudo» para limpar'
@@ -727,9 +766,22 @@ LANES.forEach(function(lane){
       var on = (k === 'all') ? !any : !!active[k];
       b.classList.toggle('active', on);
     });
+    relbar.classList.toggle('open', onRel);
+    var rk = Object.keys(relActive);
+    var anyRel = rk.length === 0;
+    relbar.querySelectorAll('button').forEach(function(b){
+      var k = b.getAttribute('data-rel');
+      var on = (k === 'all') ? anyRel : !!relActive[k];
+      b.classList.toggle('active', on);
+    });
     world.querySelectorAll('.ev').forEach(function(card){
       var cats = (card.getAttribute('data-cats')||'').split(' ').filter(Boolean);
       var show = any || keys.some(function(k){ return cats.indexOf(k) >= 0; });
+      if (show && onRel && cats.indexOf('relig')>=0){
+        /* dentro de Religiões, aplica o sub-filtro de religião */
+        var rel = card.getAttribute('data-rel')||'';
+        show = anyRel || rk.indexOf(rel)>=0;
+      }
       card.style.display = show ? '' : 'none';
     });
     world.querySelectorAll('.lane').forEach(function(lane){
@@ -749,6 +801,18 @@ LANES.forEach(function(lane){
       apply();
     });
     bar.appendChild(b);
+  });
+  /* sub-tabs de religiões */
+  Object.keys(RELSUB).forEach(function(key){
+    var b = document.createElement('button');
+    b.textContent = RELSUB[key];
+    b.setAttribute('data-rel', key);
+    b.addEventListener('click', function(){
+      if (key === 'all'){ relActive = {}; }
+      else { relActive[key] = !relActive[key]; }
+      apply();
+    });
+    relbar.appendChild(b);
   });
   window.applyCats = apply;
 })();
