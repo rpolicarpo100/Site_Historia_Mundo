@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rpolicarpo100.github.io/Site_Historia_Mundo/sitemap.xml
