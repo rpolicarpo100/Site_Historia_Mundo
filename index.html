@@ -72,6 +72,13 @@
   .legend{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:12px;font-size:12.5px}
   .legend span{display:inline-flex;align-items:center;gap:6px;color:var(--dim)}
   .dotc{width:10px;height:10px;border-radius:50%;display:inline-block}
+  /* legenda de estados (provado / teoria / futuro) */
+  .lgstate{margin-top:8px}
+  .lg-item{display:inline-flex;align-items:center;gap:7px;color:var(--dim);font-size:12px;font-style:normal}
+  .lg-tag{
+    display:inline-block;font-family:Verdana,Geneva,sans-serif;font-size:9px;font-weight:bold;
+    letter-spacing:.12em;text-transform:uppercase;padding:2px 7px;border-radius:3px;
+  }
 
   /* ---------- viewport de scroll ---------- */
   #vp{
@@ -106,17 +113,33 @@
     font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-family:Verdana,Geneva,sans-serif;
   }
   .ev{
-    position:absolute;width:152px;background:var(--card);border:1px solid var(--line);
-    border-left:3px solid;border-radius:4px;padding:7px 9px 8px;cursor:pointer;z-index:10;
-    transition:transform .15s, border-color .15s, z-index 0s;
+    position:absolute;width:152px;background:linear-gradient(180deg,var(--card) 0%, #151c2b 100%);
+    border:1px solid var(--line);border-left:4px solid;border-radius:6px;
+    padding:8px 9px 8px;cursor:pointer;z-index:10;
+    box-shadow:0 2px 6px rgba(0,0,0,.35);
+    transition:transform .15s, border-color .15s, box-shadow .15s, z-index 0s;
   }
-  .ev:hover{transform:translateY(-3px);z-index:15;border-color:var(--gold2)}
-  .ev .d{font-size:11.5px;color:var(--gold);font-variant:small-caps;letter-spacing:.04em}
-  .ev .t{font-size:12.5px;line-height:1.3;margin-top:2px}
-  .ev .flag{display:inline-block;font-size:9px;letter-spacing:.09em;padding:1px 6px;border-radius:10px;border:1px solid;margin-top:4px;font-family:Verdana,sans-serif}
-  .f-prov{color:var(--proven);border-color:var(--proven)}
-  .f-teo{color:var(--theory);border-color:var(--theory)}
-  .f-fut{color:#8fb7e8;border-color:#8fb7e8}
+  .ev:hover{transform:translateY(-3px);z-index:15;border-color:var(--gold2);box-shadow:0 8px 20px rgba(0,0,0,.5)}
+  /* etiqueta de estado (provado / teoria / futuro) */
+  .ev .tag{
+    display:block;text-align:center;font-family:Verdana,Geneva,sans-serif;
+    font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:bold;
+    padding:2px 4px;border-radius:3px;margin:-2px -2px 5px;width:calc(100% + 4px);
+  }
+  .tag-prov{background:rgba(127,191,122,.2);color:#a7e0a2;border:1px solid rgba(127,191,122,.4)}
+  .tag-teo{background:rgba(224,163,79,.2);color:#efc079;border:1px solid rgba(224,163,79,.4)}
+  .tag-fut{background:rgba(143,183,232,.15);color:#a6c7f0;border:1px solid rgba(143,183,232,.4)}
+  /* data */
+  .ev .d{
+    display:inline-block;font-size:10.5px;color:var(--gold);font-variant:small-caps;
+    letter-spacing:.05em;background:rgba(201,164,92,.12);border:1px solid rgba(201,164,92,.3);
+    border-radius:4px;padding:1px 5px;margin-bottom:4px;
+  }
+  .ev .t{font-size:12.5px;line-height:1.3;font-weight:normal;color:var(--ink);display:block}
+  /* linha de confiança */
+  .ev .conf{display:flex;align-items:center;gap:4px;font-size:9px;color:var(--dim);
+    letter-spacing:.04em;margin-top:5px;font-family:Verdana,Geneva,sans-serif;text-transform:uppercase}
+  .ev .conf i{width:6px;height:6px;border-radius:50%;display:inline-block;flex:none}
   .ev::before{content:"";position:absolute;left:-7px;top:10px;width:7px;height:7px;border-radius:50%;background:inherit;border:2px solid;border-color:inherit}
 
   /* controlos */
@@ -277,6 +300,17 @@
 
   /* ---------- evidência / confiança ---------- */
   .ev .confno{position:absolute;top:5px;right:6px;width:8px;height:8px;border-radius:50%;border:1px solid rgba(0,0,0,.4)}
+  #detail .dstate{
+    display:flex;align-items:center;gap:8px;margin:6px 0 10px;padding:8px 12px;border-radius:5px;
+    font-size:14px;letter-spacing:.03em;position:relative;
+  }
+  #detail .dstate b{font-family:Verdana,Geneva,sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:bold}
+  #detail .dstate-prov{background:rgba(127,191,122,.15);border:1px solid rgba(127,191,122,.4);color:#a7e0a2}
+  #detail .dstate-prov::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--proven)}
+  #detail .dstate-teo{background:rgba(224,163,79,.15);border:1px solid rgba(224,163,79,.4);color:#efc079}
+  #detail .dstate-teo::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--theory)}
+  #detail .dstate-fut{background:rgba(143,183,232,.13);border:1px solid rgba(143,183,232,.4);color:#a6c7f0}
+  #detail .dstate-fut::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:#8fb7e8}
   #detail .dchips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}
   #detail .chip{font-size:10.5px;padding:2px 9px;border-radius:20px;border:1px solid var(--line);letter-spacing:.03em;color:var(--dim);background:var(--card)}
   #detail .chip.solid{border:none;font-weight:bold}
@@ -394,7 +428,12 @@
     <span><i class="dotc" style="background:var(--c-nat)"></i> Eventos Naturais</span>
     <span><i class="dotc" style="background:var(--c-rel)"></i> Eventos Religiosos</span>
     <span><i class="dotc" style="background:var(--c-mac)"></i> Maçonaria &amp; Illuminati</span>
-    <span><i class="dotc" style="background:var(--c-consp)"></i> Conspirações — <b style="color:var(--proven)">provadas</b> e <b style="color:var(--theory)">teorias</b></span>
+    <span><i class="dotc" style="background:var(--c-consp)"></i> Conspirações</span>
+  </div>
+  <div class="legend lgstate">
+    <span class="lg-item"><i class="lg-tag tag-prov">✓ Provado</i> com evidência documentada</span>
+    <span class="lg-item"><i class="lg-tag tag-teo">⚠ Teoria</i> sem prova</span>
+    <span class="lg-item"><i class="lg-tag tag-fut">⏳ Futuro</i> programado/previsto</span>
   </div>
 </header>
 
@@ -834,7 +873,7 @@ var RELSUB = {
   hind: 'Hinduísmo',
   outra:'Outras tradições'
 };
-var CARDW = 152, ROWH = 78, TOPPAD = 46;
+var CARDW = 152, ROWH = 108, TOPPAD = 46;
 function confColor(c){
   var m={CONFIRMED:'#7fbf7a','HIGHLY_SUPPORTED':'#6f9fd8',PLAUSIBLE:'#5aa8c0',UNCERTAIN:'#e0c04f',CONTESTED:'#e0a34f',REFUTED:'#d87c6f',UNKNOWN:'#7a8395'};
   return m[c]||'#c9a45c';
@@ -866,12 +905,13 @@ LANES.forEach(function(lane){
     c.style.left = ev._x+'px';
     c.style.top = (TOPPAD + ev._r*ROWH)+'px';
     c.style.borderLeftColor = ev.conf ? confColor(ev.conf) : lane.color;
-    var flag = '';
-    if (ev.f==='prov') flag = '<span class="flag f-prov">PROVADO</span>';
-    if (ev.f==='teo')  flag = '<span class="flag f-teo">TEORIA</span>';
-    if (ev.f==='fut')  flag = '<span class="flag f-fut">FUTURO</span>';
-    var confdot = ev.conf ? '<span class="confno" style="background:'+confColor(ev.conf)+'"></span>' : '';
-    c.innerHTML = confdot+'<div class="d">'+ev.d+'</div><div class="t">'+ev.t+'</div>'+flag;
+    var tag = '';
+    if (ev.f==='prov') tag = '<div class="tag tag-prov">✓ Provado</div>';
+    if (ev.f==='teo')  tag = '<div class="tag tag-teo">⚠ Teoria</div>';
+    if (ev.f==='fut')  tag = '<div class="tag tag-fut">⏳ Futuro</div>';
+    var confLine = '';
+    if (ev.conf) confLine = '<div class="conf"><i style="background:'+confColor(ev.conf)+'"></i>'+(ev.estado||ev.conf)+(ev.src?(' · '+ev.src+' fontes'):'')+'</div>';
+    c.innerHTML = tag+'<div class="d">'+ev.d+'</div><div class="t">'+ev.t+'</div>'+confLine;
     var cats = [lane.cat];
     var extra = EXTRA_CATS[ev.t];
     if (extra) cats.push(extra);
@@ -966,6 +1006,10 @@ function openDetail(lane, ev){
   detail.querySelector('.dd').style.color = '';
   detail.querySelector('h3').textContent = ev.t;
   detail.querySelector('p').textContent = ev.p || '';
+  var stateBar = '';
+  if (ev.f==='prov') stateBar = '<div class="dstate dstate-prov"><b>✓ Provado</b> — evidência documentada</div>';
+  if (ev.f==='teo')  stateBar = '<div class="dstate dstate-teo"><b>⚠ Teoria</b> — sem prova</div>';
+  if (ev.f==='fut')  stateBar = '<div class="dstate dstate-fut"><b>⏳ Futuro</b> — programado / previsto</div>';
   var chips = '';
   if (ev.conf) chips += '<span class="chip solid c-'+ev.conf+'">'+(ev.estado||ev.conf)+'</span>';
   if (ev.ev)   chips += '<span class="chip">'+ev.ev+'</span>';
@@ -979,7 +1023,7 @@ function openDetail(lane, ev){
   if (ev.views) more += sec('Different Views', ev.views.map(function(x){return '<div class="warn">'+x+'</div>';}).join(''));
   if (ev.cont) more += sec('Controversies', ev.cont.map(function(x){return '<div class="warn">'+x+'</div>';}).join(''));
   if (ev.unk)  more += sec('O que não sabemos', ev.unk.map(function(x){return '<div class="ref">'+x+'</div>';}).join(''));
-  detail.querySelector('#dmore').innerHTML = chips + more;
+  detail.querySelector('#dmore').innerHTML = stateBar + chips + more;
   detail.classList.add('open');
 }
 function closeDetail(){ detail.classList.remove('open'); }
