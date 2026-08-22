@@ -226,6 +226,28 @@
   #visitas .vi{color:var(--gold);font-size:15px}
   #visitas b{color:var(--ink);font-weight:normal;font-variant:small-caps;letter-spacing:.05em}
   #visitas .num{color:var(--gold);font-size:15px;letter-spacing:.06em}
+
+  /* ---------- evidência / confiança ---------- */
+  .ev .confno{position:absolute;top:5px;right:6px;width:8px;height:8px;border-radius:50%;border:1px solid rgba(0,0,0,.4)}
+  #detail .dchips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}
+  #detail .chip{font-size:10.5px;padding:2px 9px;border-radius:20px;border:1px solid var(--line);letter-spacing:.03em;color:var(--dim);background:var(--card)}
+  #detail .chip.solid{border:none;font-weight:bold}
+  .c-CONFIRMED{background:rgba(127,191,122,.22);color:#7fbf7a;border-color:#7fbf7a}
+  .c-HIGHLY_SUPPORTED{background:rgba(111,159,216,.22);color:#6f9fd8;border-color:#6f9fd8}
+  .c-PLAUSIBLE{background:rgba(90,168,192,.22);color:#5aa8c0;border-color:#5aa8c0}
+  .c-UNCERTAIN{background:rgba(224,192,79,.22);color:#e0c04f;border-color:#e0c04f}
+  .c-CONTESTED{background:rgba(224,163,79,.22);color:#e0a34f;border-color:#e0a34f}
+  .c-REFUTED{background:rgba(216,124,111,.22);color:#d87c6f;border-color:#d87c6f}
+  .c-UNKNOWN{background:rgba(122,131,149,.22);color:#7a8395;border-color:#7a8395}
+  #detail .dmore{margin-top:10px;border-top:1px solid var(--line);padding-top:10px}
+  #detail .dmore .dsect{margin-bottom:12px}
+  #detail .dmore .dsect h5{font-family:Verdana,sans-serif;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+  #detail .dmore .dsect ul{margin-left:16px}
+  #detail .dmore .dsect li{font-size:13.5px;color:var(--dim);margin-bottom:3px}
+  #detail .dmore .dsect .warn{border-left:3px solid var(--theory);padding-left:8px;font-size:13.5px;color:var(--dim);margin-bottom:4px}
+  #detail .dmore .dsect .ref{border-left:3px solid #d87c6f;padding-left:8px;font-size:13.5px;color:var(--dim);margin-bottom:4px}
+  #detail .dmore .src{font-size:13px;color:var(--dim);margin-bottom:5px}
+  #detail .dmore .src b{color:var(--ink);font-weight:normal}
 </style>
 </head>
 <body>
@@ -362,7 +384,7 @@
   <span id="visitas" class="notranslate"><span class="vi">👁</span> <b>Visitas ao arquivo</b> <span class="num" id="visitNum">…</span></span>
 </footer>
 
-<div id="detail"><button class="x" onclick="closeDetail()">×</button><div class="dd"></div><h3></h3><p></p></div>
+<div id="detail"><button class="x" onclick="closeDetail()">×</button><div class="dd"></div><h3></h3><p></p><div class="dmore" id="dmore"></div></div>
 
 <div id="ctrl">
   <button class="big" id="bPast" title="Recuar no tempo">◀ Passado</button>
@@ -417,7 +439,7 @@ var MUNDO = [
  {y:-323,d:"323 a.C.",t:"Morte de Alexandre",p:"Fim das conquistas; começa o mundo helenístico."},
  {y:-221,d:"221 a.C.",t:"Unificação da China",p:"Qin Shi Huangdi, primeiro imperador; escrita e medidas unificadas."},
  {y:-44,d:"44 a.C.",t:"Assassinato de César",p:"Idos de Março; a República Romana agoniza."},
- {y:30,d:"c. 30 d.C.",t:"Crucificação de Jesus",p:"Do movimento dos seus seguidores nascerá o cristianismo."},
+ {y:30,d:"c. 30/33 d.C.",t:"Crucificação de Jesus",conf:"CONTESTED",estado:"Contestado",ev:"3–5 fontes",src:3,ov:"Só há duas datas plausíveis (7 abr 30 / 3 abr 33); a maioria dos especialistas prefere 30. A execução sob Pôncio Pilatos, na Páscoa, é um facto bem suportado.",p:"Do movimento dos seus seguidores nascerá o cristianismo. Datação: c. 30/33 d.C. (ver nota)."},
  {y:476,d:"476",t:"Queda de Roma (Ocidente)",p:"Odoacro depõe o último imperador; fim convencional da Antiguidade."},
  {y:622,d:"622",t:"Hégira de Maomé",p:"Ano 1 do calendário islâmico; em um século o islão vai do Indo à Ibéria."},
  {y:800,d:"800",t:"Coroação de Carlos Magno",p:"Renasce a ideia imperial no Ocidente."},
@@ -487,12 +509,12 @@ var RELIG = [
  {y:-3100,d:"c. 3100 a.C.",t:"Primeiros templos e deuses registados",p:"Com a escrita, Suméria e Egito registam os primeiros panteões: Anu, Enlil, Inanna; Ré, Osíris, Ísis. A religião organizada é tão antiga quanto a cidade."},
  {y:-2100,d:"c. 2100 a.C.",t:"Zigurate de Ur",p:"Ur-Nammu ergue o grande zigurate ao deus-lua Nanna — o templo-montanha, modelo da arquitetura sagrada mesopotâmica."},
  {y:-1350,d:"c. 1350 a.C.",t:"Akhenaton e Aton",p:"O faraó impõe o culto quase exclusivo do disco solar — experiência próxima do monoteísmo, revertida após a sua morte."},
- {y:-1000,d:"c. 1200–500 a.C.",t:"Zoroastro na Pérsia",p:"Datação debatida. O zoroastrismo — Ahura Mazda, luta cósmica entre bem e mal, juízo final — influenciará judaísmo, cristianismo e islão."},
+ {y:-850,d:"c. 1000 a.C. (datação disputada)",t:"Zoroastro na Pérsia",conf:"CONTESTED",estado:"Contestado",ev:"3–5 fontes",src:3,ov:"Figura histórica provável (Gāthās em Avestano Antigo), mas a datação é contestada: consenso académico em c. 1000 a.C., com tradição alternativa nos séc. VII–VI a.C.",evid:["Gāthās (17 hinos) atribuídos a si — fonte primária","O Avesta não fornece data","Linguística: Avestano Antigo ≈ séc. XV–IX a.C.","Tradição tardia: «258 anos antes de Alexandre» (cálculo retrospetivo)"],srcs:[{tipo:"Primária",nome:"Avesta / Gāthās (Yasna)",ano:"oral; escrita sassânida"},{tipo:"Secundária",nome:"Encyclopædia Iranica",ano:"2025"},{tipo:"Secundária",nome:"Malandra / Kellens / Boyce"}],views:["Data antiga (séc. XV–IX a.C.) via linguística — Boyce, Kellens","Data tardia (séc. VII–VI a.C.) via tradição — Gnoli","Dúvida sobre a própria existência — Kellens/Stausberg"],cont:["Data exata","Local de nascimento","Se todas as Gāthās são dele"],unk:["Data precisa","Local de nascimento","Detalhes biográficos com registo material"],p:"O zoroastrismo — Ahura Mazda, luta cósmica entre bem e mal, juízo final. Datação disputada; a dimensão da influência sobre judaísmo, cristianismo e islão também é debatida."},
  {y:-800,d:"c. 800–200 a.C.",t:"«Era Axial»",p:"Num mesmo arco temporal surgem os Upanixades e o Buda na Índia, Confúcio e Lao Tsé na China, os profetas de Israel e os filósofos gregos — as bases espirituais que perduram."},
- {y:-587,d:"587 a.C.",t:"Destruição do 1.º Templo",p:"Nabucodonosor II destrói o Templo de Jerusalém; no exílio babilónico consolida-se o monoteísmo judaico e compila-se boa parte da Bíblia hebraica."},
- {y:-528,d:"c. 528 a.C.",t:"Iluminação do Buda",p:"Segundo a tradição, Siddhartha Gautama atinge o despertar em Bodh Gaya e prega o primeiro sermão em Sarnath — nasce o budismo."},
+ {y:-586,d:"587/586 a.C.",t:"Destruição do 1.º Templo",conf:"HIGHLY_SUPPORTED",estado:"Bem suportado",ev:"3–5 fontes",src:3,ov:"Consenso: 587/586 a.C. (diferença de calendário babilónico/judaico). Algumas cronologias teológicas propõem 607 a.C., sem suporte nos registos babilónicos.",p:"Nabucodonosor II destrói o Templo de Jerusalém; no exílio babilónico consolida-se o monoteísmo judaico e compila-se boa parte da Bíblia hebraica."},
+ {y:-435,d:"c. 5.º séc. a.C. (tradicional: 528 a.C.)",t:"Iluminação do Buda",conf:"CONTESTED",estado:"Contestado",ev:"3–5 fontes",src:3,ov:"Datação disputada: a cronologia tradicional (528 a.C.) foi questionada no simpósio de Göttingen (1988); o consenso académico atual situa a morte do Buda em c. 400 a.C., pelo que a iluminação rondaria c. 435 a.C.",evid:["Cronologia tradicional (long chronology) — rejeitada em grande parte","Simpósio de Göttingen (1988): morte entre 486–368 a.C., consenso ≈ 400 a.C.","Calibração com o reinado de Aśoka (c. 268 a.C.)","Iluminação aos 35 anos + vida de 80 → ≈ 435 a.C."],srcs:[{tipo:"Secundária",nome:"Internet Encyclopedia of Philosophy",ano:"Gombrich, IUP"},{tipo:"Secundária",nome:"D.L. Cousins (crítica a Bechert)",ano:"1992-97"},{tipo:"Secundária",nome:"Open University"}],views:["Morte c. 486 a.C. (long chronology)","Morte c. 400 a.C. (consenso pós-1988)","Morte c. 368 a.C. (short chronology)"],cont:["Data exata da morte/iluminação","Cronologia curta vs longa"],unk:["Não há registo contemporâneo — a data é reconstruída"],p:"Segundo a tradição, Siddhartha Gautama atinge o despertar em Bodh Gaya e prega o primeiro sermão em Sarnath — nasce o budismo. Data da iluminação contestada (ver nota)."},
  {y:-250,d:"c. 250 a.C.",t:"Asoka difunde o budismo",p:"O imperador máuria envia missões budistas ao Ceilão e ao mundo helenístico — primeira grande expansão missionária da história."},
- {y:30,d:"c. 30/33 d.C.",t:"Crucificação de Jesus",p:"Jesus de Nazaré é executado em Jerusalém sob Pôncio Pilatos. As comunidades dos seus seguidores espalham-se pelo império em poucas décadas."},
+ {y:30,d:"c. 30/33 d.C.",t:"Crucificação de Jesus",conf:"CONTESTED",estado:"Contestado",ev:"3–5 fontes",src:3,ov:"Só há duas datas plausíveis (7 abr 30 / 3 abr 33); a maioria dos especialistas prefere 30. A execução sob Pôncio Pilatos, na Páscoa, é um facto bem suportado.",p:"Jesus de Nazaré é executado em Jerusalém sob Pôncio Pilatos. As comunidades dos seus seguidores espalham-se pelo império em poucas décadas. Datação: c. 30/33 d.C."},
  {y:70,d:"70 d.C.",t:"Destruição do 2.º Templo",p:"Tito arrasa o Templo de Jerusalém. O judaísmo reorganiza-se em torno da sinagoga e da Torá — judaísmo rabínico — na diáspora."},
  {y:313,d:"313",t:"Édito de Milão",p:"Constantino concede liberdade de culto aos cristãos. Em 325, o Concílio de Niceia define o credo; em 380, o cristianismo é religião oficial de Roma."},
  {y:610,d:"c. 610",t:"Revelação de Maomé",p:"Segundo a tradição islâmica, Maomé recebe as primeiras revelações do Corão no monte Hira, perto de Meca. A Hégira (622) marca o ano 1 islâmico."},
@@ -510,7 +532,7 @@ var RELIG = [
  {y:1962,d:"1962–1965",t:"Concílio Vaticano II",p:"A Igreja Católica abre-se ao mundo moderno: missa nas línguas vernáculas, diálogo inter-religioso, liberdade religiosa (Nostra Aetate, Dignitatis Humanae)."},
  {y:1979,d:"1979",t:"Revolução Iraniana",p:"Khomeini instala a república islâmica no Irão — o regresso da religião ao centro da política mundial marca as décadas seguintes."},
  {y:2013,d:"2013",t:"Papa Francisco",p:"Primeiro papa americano e jesuíta, eleito após a renúncia de Bento XVI (a primeira em quase 600 anos, desde 1415)."},
- {y:2033,d:"2033",t:"Bimilenário da crucificação",f:"fut",p:"Cristãos de todo o mundo assinalarão os 2000 anos da morte e ressurreição de Jesus (contando de 33 d.C.) — jubileu já em preparação em Roma e Jerusalém."}
+ {y:2033,d:"2033 (ou 2030, segundo a datação mais comum)",t:"Bimilenário da crucificação",f:"fut",conf:"CONTESTED",estado:"Contestado",ov:"Aniversário calculado sobre a data da morte — que é contestada (30 vs 33 d.C.). Se a datação mais aceite (30 d.C.) estiver certa, o bimilenário seria em 2030.",p:"Cristãos prepararão o jubileu dos 2000 anos da morte de Jesus. O ano depende da datação: 2033 (tradição 33 d.C.) ou 2030 (datação mais comum, 30 d.C.)."}
 ];
 
 var MACON = [
@@ -602,6 +624,10 @@ var LANES = [
   {name:'Conspirações · provadas vs. teorias', color:'var(--c-consp)', data:CONSP}
 ];
 var CARDW = 152, ROWH = 78, TOPPAD = 46;
+function confColor(c){
+  var m={CONFIRMED:'#7fbf7a','HIGHLY_SUPPORTED':'#6f9fd8',PLAUSIBLE:'#5aa8c0',UNCERTAIN:'#e0c04f',CONTESTED:'#e0a34f',REFUTED:'#d87c6f',UNKNOWN:'#7a8395'};
+  return m[c]||'#c9a45c';
+}
 
 LANES.forEach(function(lane){
   var el = document.createElement('div');
@@ -628,12 +654,13 @@ LANES.forEach(function(lane){
     c.className='ev';
     c.style.left = ev._x+'px';
     c.style.top = (TOPPAD + ev._r*ROWH)+'px';
-    c.style.borderLeftColor = lane.color;
+    c.style.borderLeftColor = ev.conf ? confColor(ev.conf) : lane.color;
     var flag = '';
     if (ev.f==='prov') flag = '<span class="flag f-prov">PROVADO</span>';
     if (ev.f==='teo')  flag = '<span class="flag f-teo">TEORIA</span>';
     if (ev.f==='fut')  flag = '<span class="flag f-fut">FUTURO</span>';
-    c.innerHTML = '<div class="d">'+ev.d+'</div><div class="t">'+ev.t+'</div>'+flag;
+    var confdot = ev.conf ? '<span class="confno" style="background:'+confColor(ev.conf)+'"></span>' : '';
+    c.innerHTML = confdot+'<div class="d">'+ev.d+'</div><div class="t">'+ev.t+'</div>'+flag;
     c.addEventListener('click', function(e){
       e.stopPropagation();
       openDetail(lane, ev);
@@ -649,7 +676,21 @@ function openDetail(lane, ev){
   detail.querySelector('.dd').textContent = lane.name+' · '+ev.d;
   detail.querySelector('.dd').style.color = '';
   detail.querySelector('h3').textContent = ev.t;
-  detail.querySelector('p').textContent = ev.p;
+  detail.querySelector('p').textContent = ev.p || '';
+  var chips = '';
+  if (ev.conf) chips += '<span class="chip solid c-'+ev.conf+'">'+(ev.estado||ev.conf)+'</span>';
+  if (ev.ev)   chips += '<span class="chip">'+ev.ev+'</span>';
+  if (ev.src)  chips += '<span class="chip">'+ev.src+' fonte'+(ev.src>1?'s':'')+'</span>';
+  chips = chips ? '<div class="dchips">'+chips+'</div>' : '';
+  function sec(t, body){ return '<div class="dsect"><h5>'+t+'</h5>'+body+'</div>'; }
+  var more = '';
+  if (ev.ov)   more += sec('Overview', '<div style="font-size:13.5px;color:var(--dim)">'+ev.ov+'</div>');
+  if (ev.evid) more += sec('Evidence', '<ul>'+ev.evid.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>');
+  if (ev.srcs) more += sec('Sources', ev.srcs.map(function(s){return '<div class="src"><b>'+s.tipo+'</b> — '+s.nome+(s.ano?(' <small>('+s.ano+')</small>'):'')+'</div>';}).join(''));
+  if (ev.views) more += sec('Different Views', ev.views.map(function(x){return '<div class="warn">'+x+'</div>';}).join(''));
+  if (ev.cont) more += sec('Controversies', ev.cont.map(function(x){return '<div class="warn">'+x+'</div>';}).join(''));
+  if (ev.unk)  more += sec('O que não sabemos', ev.unk.map(function(x){return '<div class="ref">'+x+'</div>';}).join(''));
+  detail.querySelector('#dmore').innerHTML = chips + more;
   detail.classList.add('open');
 }
 function closeDetail(){ detail.classList.remove('open'); }
