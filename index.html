@@ -350,6 +350,14 @@
   #relbar button{background:var(--bg2);color:var(--dim);border:1px solid var(--line);border-radius:18px;padding:4px 13px;font-family:Georgia,serif;font-size:12px;cursor:pointer;transition:all .15s;white-space:nowrap}
   #relbar button:hover{border-color:var(--gold2);color:var(--gold)}
   #relbar button.active{background:rgba(201,164,92,.16);color:var(--gold);border-color:var(--gold2)}
+
+  /* sub-barra de localização (geografia) */
+  #geobar{display:none;flex-wrap:wrap;gap:6px;justify-content:center;max-width:1000px;margin:10px auto 0;padding:0 14px}
+  #geobar.open{display:flex}
+  #geobar .rlabel{color:var(--gold2);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;font-family:Verdana,sans-serif;align-self:center;margin-right:4px}
+  #geobar button{background:var(--bg2);color:var(--dim);border:1px solid var(--line);border-radius:18px;padding:4px 12px;font-family:Georgia,serif;font-size:12.5px;cursor:pointer;transition:all .15s;white-space:nowrap}
+  #geobar button:hover{border-color:var(--gold2);color:var(--gold)}
+  #geobar button.active{background:rgba(110,159,216,.18);color:#a6c7f0;border-color:#6f9fd8}
 </style>
 </head>
 <body>
@@ -439,6 +447,7 @@
 
 <div id="catbar"><span class="hint" id="catHint">Combina várias categorias à vontade · toca em «Tudo» para limpar</span></div>
 <div id="relbar"><span class="rlabel">Religiões ▸</span></div>
+<div id="geobar" class="open"><span class="rlabel">📍 Local ▸</span></div>
 
 <div id="vp"><div id="world"></div></div>
 
@@ -873,6 +882,229 @@ var RELSUB = {
   hind: 'Hinduísmo',
   outra:'Outras tradições'
 };
+var GEO = {
+  "Invenção da escrita":"medio-oriente",
+  "Grande Pirâmide de Gizé":"africa",
+  "Código de Hamurábi":"medio-oriente",
+  "Colapso da Idade do Bronze":"medio-oriente",
+  "Democracia em Atenas":"europa",
+  "Morte de Alexandre":"europa",
+  "Unificação da China":"asia",
+  "Assassinato de César":"europa",
+  "Revolta dos Macabeus":"medio-oriente",
+  "Crucificação de Jesus":"medio-oriente",
+  "Queda de Roma (Ocidente)":"europa",
+  "Hégira de Maomé":"medio-oriente",
+  "Coroação de Carlos Magno":"europa",
+  "Gengis Khan":"asia",
+  "Magna Carta":"europa",
+  "Queda de Constantinopla":"europa",
+  "Bíblia de Gutenberg":"europa",
+  "Renascimento":"europa",
+  "Colombo na América":"america-norte",
+  "Gama chega à Índia":"asia",
+  "Reforma Protestante":"europa",
+  "1.ª circum-navegação":"global",
+  "Heliocentrismo (Copérnico)":"europa",
+  "Telescópio e luas de Júpiter (Galileu)":"europa",
+  "Paz de Vestefália":"europa",
+  "Principia de Newton":"europa",
+  "Revolução Industrial":"europa",
+  "Independência dos EUA":"america-norte",
+  "Lei da conservação da massa (Lavoisier)":"europa",
+  "Revolução Francesa":"europa",
+  "Vacina de Jenner (varíola)":"europa",
+  "Waterloo":"europa",
+  "Independências latino-americanas":"america-latina",
+  "Independência do Brasil":"america-latina",
+  "Indução eletromagnética (Faraday)":"europa",
+  "Teoria atómica (Dalton)":"europa",
+  "Telégrafo elétrico (Morse)":"america-norte",
+  "A Origem das Espécies":"europa",
+  "Proclamação de Emancipação":"america-norte",
+  "Leis da hereditariedade (Mendel)":"europa",
+  "Teoria dos germes (Pasteur)":"europa",
+  "Fim da Guerra Civil dos EUA":"america-norte",
+  "Tabela periódica (Mendeleev)":"europa",
+  "Telefone (Graham Bell)":"america-norte",
+  "Conferência de Berlim":"europa",
+  "Raios X (Röntgen)":"europa",
+  "Rádio e polónio (Curie)":"europa",
+  "1.º voo dos Wright":"america-norte",
+  "Naufrágio do Titanic":"global",
+  "Primeira Guerra Mundial":"global",
+  "Armistício da 1.ª Guerra Mundial":"global",
+  "Revolução Russa":"europa",
+  "Relatividade restrita (Einstein)":"europa",
+  "Insulina (Banting e Best)":"america-norte",
+  "Televisão eletrónica (Farnsworth)":"america-norte",
+  "Hiperinflação da República de Weimar":"europa",
+  "Crash de Wall Street":"america-norte",
+  "Penicilina (Fleming)":"europa",
+  "New Deal (Roosevelt)":"america-norte",
+  "Segunda Guerra Mundial":"global",
+  "Fundação da ONU":"global",
+  "ENIAC (primeiro computador eletrónico)":"america-norte",
+  "Independência da Índia":"asia",
+  "Bloqueio de Berlim e ponte aérea":"europa",
+  "Transistor":"america-norte",
+  "República Popular da China":"asia",
+  "Estrutura do ADN (dupla hélice)":"europa",
+  "Guerra da Coreia":"asia",
+  "Independência do Gana (Nkrumah)":"africa",
+  "Sputnik":"space",
+  "Muro de Berlim (construção)":"europa",
+  "Gagarin no espaço (Vostok 1)":"space",
+  "Crise dos Mísseis de Cuba":"america-norte",
+  "Marcha de Washington (MLK)":"america-norte",
+  "Lei dos Direitos Civis (EUA)":"america-norte",
+  "Lei do Direito ao Voto (EUA)":"america-norte",
+  "Homem na Lua":"space",
+  "Onda de independências africanas":"africa",
+  "Revolução dos Cravos":"europa",
+  "Queda do Muro de Berlim":"europa",
+  "World Wide Web":"europa",
+  "Fim da URSS":"europa",
+  "Euro":"europa",
+  "Fim do apartheid e Mandela":"africa",
+  "11 de Setembro":"america-norte",
+  "Genoma humano (projeto concluído)":"global",
+  "Crise financeira global":"global",
+  "Molecular farming (vacinas em plantas)":"global",
+  "Bóson de Higgs":"europa",
+  "Acordo de Paris":"global",
+  "Primavera Árabe":"medio-oriente",
+  "Pandemia de COVID-19":"global",
+  "Invasão da Ucrânia":"europa",
+  "Objetivos da ONU 2030":"global",
+  "Neutralidade carbónica":"global",
+  "Erupção do Cerro Blanco":"america-latina",
+  "Erupção de Tera (Santorini)":"europa",
+  "Vesúvio destrói Pompeia":"europa",
+  "O «pior ano para se estar vivo»":"global",
+  "Peste Negra":"europa",
+  "Sismo de Shaanxi":"asia",
+  "Terramoto de Lisboa":"europa",
+  "Erupção do Tambora":"asia",
+  "Krakatoa":"asia",
+  "Evento de Tunguska":"europa",
+  "Gripe pneumónica":"global",
+  "Cheias da China":"asia",
+  "Sismo de Valdivia":"america-latina",
+  "Monte de Santa Helena":"america-norte",
+  "Chernobyl":"europa",
+  "Tsunami do Índico":"asia",
+  "Eyjafjallajökull":"europa",
+  "Tohoku / Fukushima":"asia",
+  "Sismos Turquia–Síria":"medio-oriente",
+  "Sismos da Venezuela (7.2 + 7.5)":"america-latina",
+  "Sismo de Mindanao (Filipinas) 7.8":"asia",
+  "Sismo do Peru (USGS 6.7)":"america-latina",
+  "Passagem do asteroide Apophis":"space",
+  "Regresso do cometa Halley":"space",
+  "Primeiros templos e deuses registados":"medio-oriente",
+  "Zigurate de Ur":"medio-oriente",
+  "Akhenaton e Aton":"africa",
+  "Zoroastro na Pérsia":"medio-oriente",
+  "«Era Axial»":"asia",
+  "Destruição do 1.º Templo":"medio-oriente",
+  "Laozi / Daoísmo":"asia",
+  "Confúcio (Kongzi)":"asia",
+  "Segundo Templo de Jerusalém":"medio-oriente",
+  "Iluminação do Buda":"asia",
+  "Asoka difunde o budismo":"asia",
+  "Destruição do 2.º Templo":"medio-oriente",
+  "Revolta de Bar Kokhba":"medio-oriente",
+  "Édito de Milão":"europa",
+  "Revelação de Maomé":"medio-oriente",
+  "Califado Rashidun":"medio-oriente",
+  "Morte de Maomé e expansão":"medio-oriente",
+  "Shankara e o hinduísmo clássico":"asia",
+  "Grande Cisma":"europa",
+  "Era das Cruzadas":"medio-oriente",
+  "Quarta Cruzada — Queda de Constantinopla":"europa",
+  "Nasce Guru Nanak":"asia",
+  "Mayflower e a liberdade religiosa":"america-norte",
+  "Khalsa (siquismo)":"asia",
+  "Mórmons (Santos dos Últimos Dias)":"america-norte",
+  "Novos movimentos religiosos":"global",
+  "Concílio Vaticano I":"europa",
+  "Azusa Street (pentecostalismo)":"america-norte",
+  "Manuscritos do Mar Morto":"medio-oriente",
+  "Fé Bahá'í (Bahá'u'lláh)":"medio-oriente",
+  "Israel e as religiões em movimento":"medio-oriente",
+  "Concílio Vaticano II":"europa",
+  "Revolução Iraniana":"medio-oriente",
+  "Papa Francisco":"europa",
+  "Bimilenário da crucificação":"medio-oriente",
+  "Êxodo / Moisés":"medio-oriente",
+  "Mishná compilada":"medio-oriente",
+  "Talmude Babilónico":"medio-oriente",
+  "Primeira Cruzada — Queda de Jerusalém":"medio-oriente",
+  "Maimónides — Guia dos Perplexos":"medio-oriente",
+  "Pentecostes":"medio-oriente",
+  "Concílio de Niceia":"europa",
+  "Cristianismo religião oficial":"europa",
+  "Hégira":"medio-oriente",
+  "Batalha de Carbala":"medio-oriente",
+  "Expansão dos califados":"medio-oriente",
+  "Primeiro sermão de Sarnath":"asia",
+  "Theravada e Mahayana":"asia",
+  "Budismo na China":"asia",
+  "Zen/Chan na China (Bodhidharma)":"asia",
+  "Budismo no Japão":"asia",
+  "Vedas compilados":"asia",
+  "Bhagavad Gita":"asia",
+  "Templo de Angkor Wat":"asia",
+  "Manuscritos dos ofícios":"europa",
+  "Estatutos Schaw":"europa",
+  "Elias Ashmole iniciado":"europa",
+  "Grande Loja de Londres":"europa",
+  "Constituições de Anderson":"europa",
+  "1.ª condenação papal":"europa",
+  "Fundação dos Illuminati":"europa",
+  "Illuminati proibidos":"europa",
+  "Nasce o mito Illuminati":"europa",
+  "Caso William Morgan":"america-norte",
+  "Auge maçónico do séc. XIX":"europa",
+  "Perseguições totalitárias":"europa",
+  "Maçons ilustres (facto)":"europa",
+  "Loja P2 dissolvida":"europa",
+  "300 anos da Grande Loja":"europa",
+  "Nero e o incêndio de Roma":"europa",
+  "Queda dos Templários":"europa",
+  "Conspiração da Pólvora":"europa",
+  "«Illuminati controlam o mundo»":"europa",
+  "Protocolos dos Sábios de Sião":"europa",
+  "Experiência de Tuskegee":"america-norte",
+  "Projeto MK-Ultra":"america-norte",
+  "Operação Northwoods":"america-norte",
+  "Assassinato de JFK":"america-norte",
+  "Incidente de Roswell":"america-norte",
+  "Área 51 (base secreta)":"america-norte",
+  "«A ida à Lua foi encenada»":"space",
+  "Watergate":"america-norte",
+  "«Nova Ordem Mundial»":"global",
+  "«Chemtrails»":"global",
+  "Incidente de Rendlesham Forest":"europa",
+  "«11/9 foi trabalho interno»":"america-norte",
+  "Revelações de Snowden":"global",
+  "«5G causa COVID» e afins":"global",
+  "Desaparecimento de Johnny Gosch":"america-norte",
+  "General McCasland desaparece (UAP)":"america-norte",
+  "HAARP e «armas meteorológicas»":"global",
+  "O padrão repete-se":"global"
+};
+var GEOS = {
+  "europa":{label:"🇪🇺 Europa"},
+  "medio-oriente":{label:"🕌 Médio Oriente"},
+  "america-norte":{label:"🇺🇸 América do Norte"},
+  "america-latina":{label:"🌎 América Latina"},
+  "asia":{label:"🏮 Ásia"},
+  "africa":{label:"🦁 África"},
+  "global":{label:"🌐 Global"},
+  "space":{label:"🚀 Espaço"}
+};
 var CARDW = 152, ROWH = 108, TOPPAD = 46;
 function confColor(c){
   var m={CONFIRMED:'#7fbf7a','HIGHLY_SUPPORTED':'#6f9fd8',PLAUSIBLE:'#5aa8c0',UNCERTAIN:'#e0c04f',CONTESTED:'#e0a34f',REFUTED:'#d87c6f',UNKNOWN:'#7a8395'};
@@ -917,6 +1149,7 @@ LANES.forEach(function(lane){
     if (extra) cats.push(extra);
     c.setAttribute('data-cats', cats.join(' '));
     c.setAttribute('data-rel', ev.rel||'');
+    c.setAttribute('data-geo', GEO[ev.t]||'');
     c.addEventListener('click', function(e){
       e.stopPropagation();
       openDetail(lane, ev);
@@ -930,18 +1163,25 @@ LANES.forEach(function(lane){
 (function(){
   var bar = document.getElementById('catbar');
   var relbar = document.getElementById('relbar');
+  var geobar = document.getElementById('geobar');
   var active = {};             /* categorias ativas (exclui 'all') */
   var relActive = {};          /* sub-religiões ativas */
+  var geoActive = {};          /* regiões ativas */
   function barButton(b){ return b.getAttribute('data-cat'); }
   var hint = document.getElementById('catHint');
   function apply(){
     var keys = Object.keys(active);
     var any = keys.length === 0;           /* sem filtros na barra principal */
     var onRel = !!active['relig'];         /* 'Religiões' ativa? */
+    var gk = Object.keys(geoActive);
+    var anyGeo = gk.length === 0;          /* sem filtro de localização */
     if (hint){
-      hint.textContent = any
-        ? 'Combina várias categorias à vontade · toca em «Tudo» para limpar'
-        : keys.length + ' filtro' + (keys.length>1?'s':'') + ' ativo' + (keys.length>1?'s':'') + ' · toca em «Tudo» para limpar';
+      var parts = [];
+      if (!any) parts.push(keys.length + ' tipo' + (keys.length>1?'s':''));
+      if (!anyGeo) parts.push(gk.length + ' local' + (gk.length>1?'is':''));
+      hint.textContent = (!any && !anyGeo)
+        ? parts.join(' + ') + ' ativos · toca em «Tudo» para limpar'
+        : 'Combina tipo e local à vontade · toca em «Tudo» para limpar';
     }
     bar.querySelectorAll('button').forEach(function(b){
       var k = barButton(b);
@@ -956,13 +1196,21 @@ LANES.forEach(function(lane){
       var on = (k === 'all') ? anyRel : !!relActive[k];
       b.classList.toggle('active', on);
     });
+    geobar.querySelectorAll('button').forEach(function(b){
+      var k = b.getAttribute('data-geo');
+      var on = (k === 'all') ? anyGeo : !!geoActive[k];
+      b.classList.toggle('active', on);
+    });
     world.querySelectorAll('.ev').forEach(function(card){
       var cats = (card.getAttribute('data-cats')||'').split(' ').filter(Boolean);
       var show = any || keys.some(function(k){ return cats.indexOf(k) >= 0; });
       if (show && onRel && cats.indexOf('relig')>=0){
-        /* dentro de Religiões, aplica o sub-filtro de religião */
         var rel = card.getAttribute('data-rel')||'';
         show = anyRel || rk.indexOf(rel)>=0;
+      }
+      if (show && !anyGeo){
+        var geo = card.getAttribute('data-geo')||'';
+        show = gk.indexOf(geo) >= 0;
       }
       card.style.display = show ? '' : 'none';
     });
@@ -995,6 +1243,23 @@ LANES.forEach(function(lane){
       apply();
     });
     relbar.appendChild(b);
+  });
+  /* sub-tabs de localização (geografia) */
+  var geoAll = document.createElement('button');
+  geoAll.textContent = '🌐 Todos';
+  geoAll.setAttribute('data-geo','all');
+  geoAll.classList.add('active');
+  geoAll.addEventListener('click', function(){ geoActive = {}; apply(); });
+  geobar.appendChild(geoAll);
+  Object.keys(GEOS).forEach(function(key){
+    var b = document.createElement('button');
+    b.textContent = GEOS[key].label;
+    b.setAttribute('data-geo', key);
+    b.addEventListener('click', function(){
+      geoActive[key] = !geoActive[key];
+      apply();
+    });
+    geobar.appendChild(b);
   });
   window.applyCats = apply;
 })();
