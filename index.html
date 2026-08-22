@@ -54,17 +54,17 @@
 </script>
 <style>
   :root{
-    --bg:#0d1017; --bg2:#131826; --card:#1a2130; --ink:#e8e2d5; --dim:#a89f8c;
-    --gold:#c9a45c; --gold2:#8a7340; --line:#2b3547;
-    --c-mundo:#c9a45c; --c-nat:#6fbf7a; --c-rel:#c98cd8; --c-mac:#6f9fd8; --c-consp:#d87c6f;
-    --proven:#7fbf7a; --theory:#e0a34f;
+    --bg:#05070d; --bg2:#0a101c; --card:#0f1526; --ink:#e6edf7; --dim:#8494ab;
+    --gold:#38bdf8; --gold2:#1d4ed8; --line:#1c2a42;
+    --c-mundo:#38bdf8; --c-nat:#34d399; --c-rel:#a78bfa; --c-mac:#60a5fa; --c-consp:#fb7185;
+    --proven:#34d399; --theory:#fbbf24;
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  body{background:var(--bg);color:var(--ink);font-family:Georgia,'Times New Roman',serif;overflow-x:hidden}
+  body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;overflow-x:hidden}
 
   header{
     text-align:center;padding:26px 16px 18px;border-bottom:1px solid var(--line);
-    background:radial-gradient(ellipse at 50% -40%, rgba(201,164,92,.15), transparent 65%);
+    background:radial-gradient(ellipse at 50% -40%, rgba(56,189,248,.18), transparent 65%);
   }
   header h1{font-weight:normal;font-size:clamp(22px,4vw,34px)}
   header h1 em{color:var(--gold);font-style:italic}
@@ -76,7 +76,7 @@
   .lgstate{margin-top:8px}
   .lg-item{display:inline-flex;align-items:center;gap:7px;color:var(--dim);font-size:12px;font-style:normal}
   .lg-tag{
-    display:inline-block;font-family:Verdana,Geneva,sans-serif;font-size:9px;font-weight:bold;
+    display:inline-block;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;font-size:9px;font-weight:bold;
     letter-spacing:.12em;text-transform:uppercase;padding:2px 7px;border-radius:3px;
   }
 
@@ -110,19 +110,20 @@
     position:sticky;left:0;top:auto;z-index:25;display:inline-block;margin:8px 0 0 0;
     padding:7px 16px 7px 14px;background:rgba(13,16,23,.88);backdrop-filter:blur(4px);
     border:1px solid var(--line);border-left:4px solid;border-radius:0 4px 4px 0;
-    font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-family:Verdana,Geneva,sans-serif;
+    font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
   }
   .ev{
-    position:absolute;width:152px;background:linear-gradient(180deg,var(--card) 0%, #151c2b 100%);
-    border:1px solid var(--line);border-left:4px solid;border-radius:6px;
+    position:absolute;width:152px;background:linear-gradient(160deg,var(--card) 0%, #0c1322 100%);
+    border:1px solid var(--line);border-left:4px solid;border-radius:11px;
     padding:8px 9px 8px;cursor:pointer;z-index:10;
-    box-shadow:0 2px 6px rgba(0,0,0,.35);
+    box-shadow:0 3px 12px rgba(0,0,0,.4);
+    backdrop-filter:blur(4px);
     transition:transform .15s, border-color .15s, box-shadow .15s, z-index 0s;
   }
-  .ev:hover{transform:translateY(-3px);z-index:15;border-color:var(--gold2);box-shadow:0 8px 20px rgba(0,0,0,.5)}
+  .ev:hover{transform:translateY(-4px);z-index:15;border-color:var(--gold);box-shadow:0 10px 26px rgba(0,0,0,.5), 0 0 16px rgba(56,189,248,.18)}
   /* etiqueta de estado (provado / teoria / futuro) */
   .ev .tag{
-    display:block;text-align:center;font-family:Verdana,Geneva,sans-serif;
+    display:block;text-align:center;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
     font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:bold;
     padding:2px 4px;border-radius:3px;margin:-2px -2px 5px;width:calc(100% + 4px);
   }
@@ -138,19 +139,20 @@
   .ev .t{font-size:12.5px;line-height:1.3;font-weight:normal;color:var(--ink);display:block}
   /* linha de confiança */
   .ev .conf{display:flex;align-items:center;gap:4px;font-size:9px;color:var(--dim);
-    letter-spacing:.04em;margin-top:5px;font-family:Verdana,Geneva,sans-serif;text-transform:uppercase}
+    letter-spacing:.04em;margin-top:5px;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;text-transform:uppercase}
   .ev .conf i{width:6px;height:6px;border-radius:50%;display:inline-block;flex:none}
   .ev::before{content:"";position:absolute;left:-7px;top:10px;width:7px;height:7px;border-radius:50%;background:inherit;border:2px solid;border-color:inherit}
 
   /* controlos */
   #ctrl{
     position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:80;
-    display:flex;gap:10px;align-items:center;background:rgba(13,16,23,.9);backdrop-filter:blur(6px);
-    border:1px solid var(--gold2);border-radius:40px;padding:8px 14px;box-shadow:0 6px 24px rgba(0,0,0,.5);
+    display:flex;gap:10px;align-items:center;background:rgba(10,16,28,.9);backdrop-filter:blur(10px);
+    border:1px solid rgba(56,189,248,.3);border-radius:40px;padding:8px 14px;
+    box-shadow:0 6px 24px rgba(0,0,0,.5), 0 0 20px rgba(56,189,248,.08);
   }
   #ctrl button{
     background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:24px;
-    padding:8px 18px;font-family:Georgia,serif;font-size:14px;cursor:pointer;transition:all .15s;white-space:nowrap;
+    padding:8px 18px;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:14px;cursor:pointer;transition:all .15s;white-space:nowrap;
   }
   #ctrl button:hover{border-color:var(--gold);color:var(--gold)}
   #ctrl .big{font-size:17px;padding:8px 20px}
@@ -159,8 +161,10 @@
   /* painel de detalhe */
   #detail{
     position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;
-    width:min(680px,94vw);background:var(--bg2);border:1px solid var(--gold2);border-radius:8px;
-    padding:16px 20px;z-index:70;transition:all .25s;box-shadow:0 10px 40px rgba(0,0,0,.6);
+    width:min(680px,94vw);background:linear-gradient(170deg,var(--bg2) 0%, #0b1120 100%);
+    border:1px solid rgba(56,189,248,.35);border-radius:16px;
+    padding:18px 22px;z-index:70;transition:all .25s;
+    box-shadow:0 14px 44px rgba(0,0,0,.6), 0 0 24px rgba(56,189,248,.12);
   }
   #detail.open{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
   #detail .dd{color:var(--gold);font-variant:small-caps;font-size:14px}
@@ -179,7 +183,7 @@
   }
   #langSel{
     background:var(--card);color:var(--ink);border:1px solid var(--gold2);border-radius:24px;
-    padding:8px 12px;font-family:Georgia,serif;font-size:13px;cursor:pointer;outline:none;
+    padding:8px 12px;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:13px;cursor:pointer;outline:none;
     max-width:150px;
   }
   #langSel:hover{color:var(--gold);border-color:var(--gold)}
@@ -190,14 +194,14 @@
   body{top:0 !important}
   font{background:transparent !important;box-shadow:none !important}
   #topbar a, #topbar button{
-    font-family:Georgia,serif;font-size:13.5px;cursor:pointer;text-decoration:none;
+    font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:13.5px;cursor:pointer;text-decoration:none;
     padding:8px 16px;border-radius:24px;transition:all .15s;
   }
   #btnDonate{
-    background:linear-gradient(135deg,#c9a45c,#a9853f);color:#14100a;border:1px solid #e2c98e;
-    font-weight:bold;letter-spacing:.03em;box-shadow:0 3px 14px rgba(201,164,92,.35);
+    background:linear-gradient(135deg,#38bdf8,#2563eb);color:#04121e;border:1px solid rgba(56,189,248,.45);
+    font-weight:bold;letter-spacing:.03em;box-shadow:0 3px 14px rgba(56,189,248,.35);
   }
-  #btnDonate:hover{filter:brightness(1.1)}
+  #btnDonate:hover{filter:brightness(1.12)}
   #btnContrib{background:var(--card);color:var(--ink);border:1px solid var(--gold2)}
   #btnContrib:hover{color:var(--gold);border-color:var(--gold)}
 
@@ -226,14 +230,14 @@
   .don-opt .dt span{color:var(--dim);font-size:12.5px;word-break:break-all}
   .don-opt button{
     background:none;border:1px solid var(--gold2);color:var(--gold);border-radius:4px;
-    padding:5px 12px;cursor:pointer;font-size:12px;font-family:Georgia,serif;white-space:nowrap;
+    padding:5px 12px;cursor:pointer;font-size:12px;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;white-space:nowrap;
   }
   .don-opt button:hover{background:rgba(201,164,92,.12)}
   .don-opt .acts{display:flex;flex-direction:column;gap:6px}
   .don-opt a.pay{
     display:inline-block;text-align:center;text-decoration:none;border-radius:4px;
-    padding:5px 12px;font-size:12px;font-family:Georgia,serif;white-space:nowrap;
-    background:linear-gradient(135deg,#c9a45c,#a9853f);color:#14100a;border:1px solid #e2c98e;font-weight:bold;
+    padding:5px 12px;font-size:12px;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;white-space:nowrap;
+    background:linear-gradient(135deg,#c9a45c,#a9853f);color:#14100a;border:1px solid rgba(56,189,248,.35);font-weight:bold;
   }
   .don-opt a.pay:hover{filter:brightness(1.1)}
 
@@ -251,7 +255,7 @@
   #arquivo label{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:5px;font-family:Verdana,sans-serif}
   #arquivo input[type=text], #arquivo input[type=email], #arquivo select, #arquivo textarea{
     width:100%;background:var(--card);border:1px solid var(--line);border-radius:5px;
-    color:var(--ink);font-family:Georgia,serif;font-size:14.5px;padding:10px 12px;outline:none;transition:border-color .15s;
+    color:var(--ink);font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:14.5px;padding:10px 12px;outline:none;transition:border-color .15s;
   }
   #arquivo input:focus, #arquivo select:focus, #arquivo textarea:focus{border-color:var(--gold2)}
   #arquivo textarea{min-height:120px;resize:vertical}
@@ -270,7 +274,7 @@
   #filelist li button:hover{color:#d87c6f}
   #btnSend{
     display:block;width:100%;background:linear-gradient(135deg,#c9a45c,#a9853f);color:#14100a;
-    border:1px solid #e2c98e;border-radius:6px;padding:13px;font-family:Georgia,serif;
+    border:1px solid rgba(56,189,248,.35);border-radius:6px;padding:13px;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
     font-size:16px;font-weight:bold;cursor:pointer;letter-spacing:.02em;
   }
   #btnSend:hover{filter:brightness(1.08)}
@@ -304,7 +308,7 @@
     display:flex;align-items:center;gap:8px;margin:6px 0 10px;padding:8px 12px;border-radius:5px;
     font-size:14px;letter-spacing:.03em;position:relative;
   }
-  #detail .dstate b{font-family:Verdana,Geneva,sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:bold}
+  #detail .dstate b{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:bold}
   #detail .dstate-prov{background:rgba(127,191,122,.15);border:1px solid rgba(127,191,122,.4);color:#a7e0a2}
   #detail .dstate-prov::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--proven)}
   #detail .dstate-teo{background:rgba(224,163,79,.15);border:1px solid rgba(224,163,79,.4);color:#efc079}
@@ -335,7 +339,7 @@
   #catbar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:1000px;margin:16px auto 0;padding:0 14px}
   #catbar button{
     background:var(--card);color:var(--dim);border:1px solid var(--line);border-radius:20px;
-    padding:6px 15px;font-family:Verdana,Geneva,sans-serif;font-size:11px;letter-spacing:.07em;text-transform:uppercase;
+    padding:6px 15px;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;font-size:11px;letter-spacing:.07em;text-transform:uppercase;
     cursor:pointer;transition:all .15s;white-space:nowrap;
   }
   #catbar button:hover{border-color:var(--gold2);color:var(--gold)}
@@ -347,7 +351,7 @@
   #relbar{display:none;flex-wrap:wrap;gap:6px;justify-content:center;max-width:1000px;margin:10px auto 0;padding:0 14px}
   #relbar.open{display:flex}
   #relbar .rlabel{color:var(--gold2);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;font-family:Verdana,sans-serif;align-self:center;margin-right:4px}
-  #relbar button{background:var(--bg2);color:var(--dim);border:1px solid var(--line);border-radius:18px;padding:4px 13px;font-family:Georgia,serif;font-size:12px;cursor:pointer;transition:all .15s;white-space:nowrap}
+  #relbar button{background:var(--bg2);color:var(--dim);border:1px solid var(--line);border-radius:18px;padding:4px 13px;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:12px;cursor:pointer;transition:all .15s;white-space:nowrap}
   #relbar button:hover{border-color:var(--gold2);color:var(--gold)}
   #relbar button.active{background:rgba(201,164,92,.16);color:var(--gold);border-color:var(--gold2)}
 
@@ -355,7 +359,7 @@
   #geobar{display:none;flex-wrap:wrap;gap:6px;justify-content:center;max-width:1000px;margin:10px auto 0;padding:0 14px}
   #geobar.open{display:flex}
   #geobar .rlabel{color:var(--gold2);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;font-family:Verdana,sans-serif;align-self:center;margin-right:4px}
-  #geobar button{background:var(--bg2);color:var(--dim);border:1px solid var(--line);border-radius:18px;padding:4px 12px;font-family:Georgia,serif;font-size:12.5px;cursor:pointer;transition:all .15s;white-space:nowrap}
+  #geobar button{background:var(--bg2);color:var(--dim);border:1px solid var(--line);border-radius:18px;padding:4px 12px;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:12.5px;cursor:pointer;transition:all .15s;white-space:nowrap}
   #geobar button:hover{border-color:var(--gold2);color:var(--gold)}
   #geobar button.active{background:rgba(110,159,216,.18);color:#a6c7f0;border-color:#6f9fd8}
 </style>
